@@ -14,9 +14,10 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         BASE.init(this, "demo");
-        Map<String, String> head = new HashMap<>();
+        Map<String, String> head = new HashMap<>();// TODO: 2019/12/11 测试 添加公共头
         head.put("token", "123321");
         BASE.setHead(head);
+        // TODO: 2019/12/11 下面写入项目地址和后续方法
 //        BASE.setBaseUrl(Constants.host, Constants.baseUrl);
         BASE.setQuickUi(WelcomePage.class);
     }
