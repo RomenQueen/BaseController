@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/shape_conner4_btn_soidwhite"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textColor="#333"
+        android:textSize="@dimen/text_size_32px" />
+
+    <TextView
+        android:id="@id/dialog_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="确定买进？"
+        android:textColor="#333"
+        android:textSize="@dimen/text_size_32px" />
+
+    <View style="@style/HorizontalLine" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@id/dialog_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="立即更新"
+            android:textColor="#FF4A5F" />
+
+        <View style="@style/HorizontalLine" />
+
+        <TextView
+            android:id="@id/dialog_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="稍后更新"
+            android:textColor="#ccc" />
+    </LinearLayout>
+</LinearLayout>

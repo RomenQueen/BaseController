@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--状态栏高度-->
+    <dimen name="padding_4px">2dp</dimen>
+    <dimen name="padding_6px">3dp</dimen>
+    <dimen name="padding_8px">4dp</dimen>
+    <dimen name="padding_10px">5dp</dimen>
+    <dimen name="padding_18px">9dp</dimen>
+    <dimen name="padding_20px">10dp</dimen>
+    <dimen name="padding_24px">12dp</dimen>
+    <dimen name="padding_30px">15dp</dimen>
+    <dimen name="padding_40px">20dp</dimen>
+    <dimen name="padding_42px">21dp</dimen>
+    <dimen name="padding_50px">25dp</dimen>
+    <dimen name="padding_60px">30dp</dimen>
+    <dimen name="padding_63px">33dp</dimen>
+    <dimen name="padding_70px">35dp</dimen>
+    <dimen name="padding_80px">40dp</dimen>
+    <dimen name="padding_90px">45dp</dimen>
+    <dimen name="padding_92px">48dp</dimen>
+    <dimen name="padding_100px">50dp</dimen>
+    <dimen name="padding_110px">55dp</dimen>
+    <dimen name="padding_120px">60dp</dimen>
+    <dimen name="padding_132px">66dp</dimen>
+    <dimen name="padding_140px">70dp</dimen>
+    <dimen name="padding_150px">75dp</dimen>
+    <dimen name="padding_200px">100dp</dimen>
+    <dimen name="padding_160px">80dp</dimen>
+    <dimen name="padding_180px">90dp</dimen>
+    <dimen name="padding_220px">110dp</dimen>
+    <dimen name="padding_300px">150dp</dimen>
+    <dimen name="padding_360px">180dp</dimen>
+    <dimen name="padding_400px">200dp</dimen>
+    <dimen name="padding_500px">250dp</dimen>
+    <dimen name="padding_600px">300dp</dimen>
+    <dimen name="padding_840px">420dp</dimen>
+    <dimen name="padding_900px">450dp</dimen>
+
+    <dimen name="text_size_22px">11sp</dimen>
+    <dimen name="text_size_24px">12sp</dimen>
+    <dimen name="text_size_26px">13sp</dimen>
+    <dimen name="text_size_28px">14sp</dimen>
+    <dimen name="text_size_30px">15sp</dimen>
+    <dimen name="text_size_32px">16sp</dimen>
+    <dimen name="text_size_34px">17sp</dimen>
+    <dimen name="text_size_42px">21sp</dimen>
+    <dimen name="text_size_54px">27sp</dimen>
+    <dimen name="text_size_80px">40sp</dimen>
+    <dimen name="text_size_60px">30sp</dimen>
+    <dimen name="height_title">@dimen/padding_120px</dimen>
+    <dimen name="padding_240px">120dp</dimen>
+    <dimen name="login_input_height">@dimen/padding_80px</dimen>
+    <dimen name="padding_210px">105dp</dimen>
+    <dimen name="screen_width">480dp</dimen>
+</resources>

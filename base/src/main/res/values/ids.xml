@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--页面中部标题，使用该id值能够自动填充 不需要fvb 了-->
+    <item name="common_title" type="id" />
+    <item name="common_title_pan" type="id" />
+    <!--页面返回按钮  一般在左边-->
+    <item name="common_left_back" type="id" />
+    <!--页面拓展按钮-->
+    <item name="common_right_btn" type="id" />
+    <item name="tag_refuse_page" type="id" />
+    <!--图片点击内容-->
+    <item name="tag_key" type="id" />
+    <!--Glide 专用-->
+    <item name="glide_tag_key" type="id" />
+
+    <!--Dialog 专用  取消-->
+    <item name="dialog_cancel" type="id" />
+    <item name="dialog_confirm" type="id" />
+    <item name="dialog_title" type="id" />
+    <item name="dialog_content" type="id" />
+    <item name="dialog_line" type="id" />
+    <item name="dialog_dismiss" type="id" />
+
+    <item name="base_container" type="id" />
+    <!--充当状态栏的View id-->
+    <item name="common_status_bar" type="id" />
+    <!--开屏页显示下载进度的View id-->
+    <item name="welcome_progress_text" type="id" />
+
+</resources>

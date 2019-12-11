@@ -2,6 +2,7 @@ package com.rq.demo.quick_ui;
 
 import com.hzaz.base.BaseController;
 import com.hzaz.base.common_util.LOG;
+import com.hzaz.base.common_util.ToastUtil;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.RequestType;
 import com.hzaz.base.quick_base_ui.impl.WelcomeImpl;
@@ -10,6 +11,12 @@ import com.rq.demo.R;
 
 
 public class WelcomePage implements WelcomeImpl {
+
+    public static void main(String[] args) {
+        String param = "%s 秒";
+        System.out.println(String.format(param, 6));
+    }
+
 
     @Override
     public int getLayoutId() {
@@ -27,7 +34,19 @@ public class WelcomePage implements WelcomeImpl {
                 "2.在Application onCreate 中  调用 BASE.setQuickUi(**.class)\n" +
                 "3.注册启动 ACT -> com.hzaz.base.WelcomeActivity");
         codeHelper = new CodeHelper(view, R.id.next);
-        codeHelper.setRunTime(3);
+        codeHelper.setRunAndCompleteShow("%s 秒");
+        codeHelper.setListener(new CodeHelper.OnRunningListener() {
+            @Override
+            public void onRunningStart() {
+                ToastUtil.show("点击了关闭");
+            }
+
+            @Override
+            public void onRunningComplete() {
+                LOG.e("WelcomePage", "LINE:60");
+            }
+        });
+        codeHelper.setRunTime(4);
         codeHelper.start();
 //        HttpManager.refuse(view);
 //        HttpManager.getTopNames(view);

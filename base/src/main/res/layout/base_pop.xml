@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/padding_30px">
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/base_text"
+        android:layout_width="@dimen/padding_200px"
+        android:layout_height="@dimen/padding_90px"
+        android:layout_marginLeft="@dimen/padding_30px"
+        android:layout_marginRight="@dimen/padding_30px"
+        android:background="@drawable/select_shanxuan"
+        android:gravity="center"
+        android:textColor="@drawable/select_color_red_balck"
+        android:textSize="@dimen/text_size_30px" />
+</LinearLayout>

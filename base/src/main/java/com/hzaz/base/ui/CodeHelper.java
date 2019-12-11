@@ -23,7 +23,7 @@ import io.reactivex.functions.Consumer;
 public class CodeHelper {
 
     private int defaultTimeSave = 60;//默认倒计时时间（秒）
-    private OnGetCodeListener onListener;
+    private OnRunningListener onListener;
     private Context mContext;
     private TextView codeBt;
     private Disposable mDisposable;
@@ -33,72 +33,58 @@ public class CodeHelper {
         this.defaultTimeSave = i;
     }
 
-    public interface ShowInfo {
+    String runStr;
+    String completeStr;
+    String initStr;
 
-        String getResendStr(int second);
-
-        String getDefaultStr();
-
-        int getClickAbleBGRes();
-
-        int getUnClickAbleBGRes();
+    /**
+     * 0 - 运行状态 不可缺省 可使用 %s 做格式化输出
+     * 1 - 结束状态 不可缺省
+     * 2 - 初始状态 缺省使用-> 1
+     */
+    public void setRunAndCompleteShow(String... str) {
+        if (str == null || str.length < 2) {
+            LOG.showUserWhere("setRunAndCompleteShow.error");
+            return;
+        }
+        this.runStr = str[0];
+        this.completeStr = str[1];
+        if (str.length > 2) {
+            this.initStr = str[2];
+        } else {
+            this.initStr = str[1];
+        }
     }
 
-    private static ShowInfo mShowInfo;
-    private ShowInfo defaultShowInfo = new ShowInfo() {
-        @Override
-        public String getResendStr(int second) {
-            return second + " s";
-        }
-
-        @Override
-        public String getDefaultStr() {
-            return "发送验证码";
-        }
-
-        @Override
-        public int getClickAbleBGRes() {
-            return 0;
-        }
-
-        @Override
-        public int getUnClickAbleBGRes() {
-            return 0;
-        }
-    };
-
-    public void setShowInfo(ShowInfo info) {
-        this.defaultShowInfo = info;
+    public String getRunStr(int second) {
+        return String.format(runStr, second);
     }
 
-    public static void initCodeHelper(ShowInfo info) {
-        mShowInfo = info;
+    public String getCompleteStr() {
+        return completeStr;
+    }
+
+    public String getInitStr() {
+        return initStr;
     }
 
     public CodeHelper(BaseController controller, int id, String tag) {
-        if (mShowInfo == null) {
-            LOG.e("CodeHelper", "you must use init Utils in Application onCreate");
-            return;
-        }
         this.mContext = controller.getContextActivity();
         this.codeBt = controller.getView(id);
-        this.tag = BASE.getUserFrom() + tag;
-        LOG.e("CodeHelper", "CodeHelper.54:" + tag);
+        this.tag = BASE.getUseFrom() + tag;
+        LOG.e("CodeHelper", "CodeHelper.90:" + tag);
         onResume();
     }
 
     public CodeHelper(BaseController controller, int id) {
-        if (mShowInfo == null) {
-            mShowInfo = defaultShowInfo;
-        }
         this.mContext = controller.getContextActivity();
         this.codeBt = controller.getView(id);
-        this.tag = BASE.getUserFrom();
+        this.tag = BASE.getUseFrom();
         LOG.e("CodeHelper", "CodeHelper.66:" + tag);
         onResume();
     }
 
-    public void setListener(OnGetCodeListener codeBt) {
+    public void setListener(OnRunningListener codeBt) {
         this.onListener = codeBt;
     }
 
@@ -106,22 +92,18 @@ public class CodeHelper {
      * 开启倒计时
      */
     public void start(final int second, final boolean start) {//start 是否点击调用
-        if (mShowInfo == null) {
-            mShowInfo = defaultShowInfo;
-        }
         //点击后，按钮不可点
         mDisposable = Flowable.intervalRange(0, second, 0, 1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Consumer<Long>() {
                     @Override
                     public void accept(Long aLong) {
-                        codeBt.setText(mShowInfo.getResendStr((int) (second - aLong - 1)));
+                        codeBt.setText(getRunStr((int) (second - aLong - 1)));
                         if (codeBt.isEnabled()) {
-                            codeBt.setBackgroundResource(mShowInfo.getUnClickAbleBGRes());
                             codeBt.setEnabled(false);
                             if (onListener != null) {
                                 if (start) {
-                                    onListener.onGetCode();
+                                    onListener.onRunningStart();
                                 }
                             }
                         }
@@ -132,10 +114,9 @@ public class CodeHelper {
                     public void run() {
                         //倒计时完毕置为可点击状态
                         codeBt.setEnabled(true);
-                        codeBt.setBackgroundResource(mShowInfo.getClickAbleBGRes());
-                        codeBt.setText(mShowInfo.getDefaultStr());
+                        codeBt.setText(getCompleteStr());
                         if (onListener != null) {
-                            onListener.onReleaseCode();
+                            onListener.onRunningComplete();
                         }
                     }
                 })
@@ -175,16 +156,12 @@ public class CodeHelper {
      * 请求失败，立即重置状态
      */
     public void reset() {
-        if (mShowInfo == null) {
-            mShowInfo = defaultShowInfo;
-        }
         SPUtil.setLong(mContext, "remain." + tag, 0L);
         if (mDisposable != null) {
             mDisposable.dispose();
         }
         codeBt.setEnabled(true);
-        codeBt.setBackgroundResource(mShowInfo.getClickAbleBGRes());
-        codeBt.setText(mShowInfo.getDefaultStr());
+        codeBt.setText(getInitStr());
         //  codeBt.setBackgroundResource(R.drawable.bg_bt_code);
     }
 
@@ -197,9 +174,12 @@ public class CodeHelper {
         }
     }
 
-    public interface OnGetCodeListener {
-        void onGetCode();
+    /**
+     * 运行监听若未设置的话可以在 View的点击事件中处理
+     */
+    public interface OnRunningListener {
+        void onRunningStart();
 
-        void onReleaseCode();
+        void onRunningComplete();
     }
 }

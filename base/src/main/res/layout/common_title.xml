@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/common_title_pan"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gradient_top">
+
+    <ImageView
+        android:id="@id/common_left_back"
+        android:layout_width="@dimen/height_title"
+        android:layout_height="@dimen/height_title"
+        android:background="@null"
+        android:padding="@dimen/padding_10px"
+        android:src="@drawable/ic_keyboard_arrow_left_black_24dp" />
+
+    <TextView
+        android:id="@id/common_title"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_title"
+        android:background="@null"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_42px"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="common_title" />
+
+    <TextView
+        android:id="@id/common_right_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/height_title"
+        android:background="@null"
+        android:gravity="center"
+        android:paddingLeft="@dimen/padding_20px"
+        android:paddingRight="@dimen/padding_20px"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_42px"
+        app:layout_constraintRight_toRightOf="parent"
+        tools:text="common_title" />
+</android.support.constraint.ConstraintLayout>

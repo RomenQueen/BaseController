@@ -115,7 +115,10 @@ public class BASE {
         return mNetErrorToast;
     }
 
-    public static String getUserFrom() {
+    /**
+     * @return getUseFrom 所在方法的上层调用处
+     */
+    public static String getUseFrom() {
         StackTraceElement[] stacks = new Exception().getStackTrace();
         if (stacks != null) {
             try {

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="white">#fff</color>
+    <color name="transparent">#00000000</color>
+    <color name="gray_999">#999</color>
+    <color name="gray_F2F2F2">#F2F2F2</color>
+    <color name="text_color_333333">#333333</color>
+    <color name="colorPrimary">#282828</color>
+    <color name="gray_line_999">#999</color>
+    <color name="transparent_pop">#66000000</color>
+
+    <color name="textColor68">#444444</color>
+    <color name="textColor153">#999999</color>
+    <color name="textColor119">#777777</color>
+    <color name="gray_f7">#F7F7F7</color>
+    <color name="textColor1212033">#79CB03</color>
+    <color name="stock_green">#79CB03</color>
+    <color name="stock_yellow">#FFA80F</color>
+    <color name="stock_red">#FF4A5F</color>
+    <color name="stock_blue">#1E98FF</color>
+</resources>

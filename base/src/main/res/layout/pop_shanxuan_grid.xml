@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="horizontal">
+
+    <View
+        android:id="@+id/view_left"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@color/transparent_pop" />
+
+    <LinearLayout
+        android:layout_width="@dimen/padding_900px"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <LinearLayout
+            android:layout_width="@dimen/padding_900px"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_30px"
+                android:paddingBottom="0px"
+                android:text="时间范围"
+                android:textSize="@dimen/text_size_42px" />
+
+            <GridView
+                android:id="@+id/grid_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout_height="@dimen/padding_100px" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="0px"
+                android:padding="@dimen/padding_30px"
+                android:text="活动分类"
+                android:textSize="@dimen/text_size_42px" />
+
+            <GridView
+                android:id="@+id/grid_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout_height="@dimen/padding_100px" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/padding_60px"
+            android:paddingBottom="@dimen/padding_60px">
+
+            <TextView
+                android:id="@+id/btn_cancel"
+                android:layout_width="@dimen/padding_300px"
+                android:layout_height="@dimen/padding_100px"
+                android:gravity="center"
+                android:text="取消"
+                android:textSize="@dimen/text_size_42px" />
+
+            <View
+                android:layout_width="@dimen/padding_60px"
+                android:layout_height="0dp" />
+
+            <TextView
+                android:id="@+id/btn_sure"
+                android:layout_width="@dimen/padding_300px"
+                android:layout_height="@dimen/padding_100px"
+                android:background="@drawable/gradient_common_btn"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_42px" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/transparent_pop" />
+
+    </LinearLayout>
+</LinearLayout>

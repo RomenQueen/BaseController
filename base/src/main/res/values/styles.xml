@@ -1,0 +1,55 @@
+<resources>
+
+
+    <style name="ThemeWelcome" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="transparentFrameWindowStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+    <!--对话框动画-->
+    <style name="main_menu_animstyle">
+        <item name="android:windowEnterAnimation">@anim/anim_bottom_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_bottom_out</item>
+    </style>
+
+    <style name="FullScreen" parent="@android:style/Theme.NoTitleBar.Fullscreen">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="PopList">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:cacheColorHint">@android:color/transparent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:horizontalSpacing">@dimen/padding_20px</item>
+        <item name="android:listSelector">@android:color/transparent</item>
+        <item name="android:divider">@color/gray_999</item>
+        <item name="android:dividerHeight">1px</item>
+        <item name="android:numColumns">3</item>
+        <item name="android:scrollbars">none</item>
+        <item name="android:stretchMode">columnWidth</item>
+    </style>
+
+    <style name="HorizontalLine">
+        <item name="android:layout_height">1px</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:background">@color/gray_line_999</item>
+    </style>
+
+    <style name="VerticalLine">
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_width">1px</item>
+        <item name="android:background">@color/gray_line_999</item>
+    </style>
+
+
+</resources>
