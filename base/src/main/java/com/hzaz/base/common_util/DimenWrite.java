@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * 一款自动写入尺寸的文件，搭配 ScreenMatch 做屏幕适配 -> https://blog.csdn.net/duanchuanzhi/article/details/81065011
+ */
 public class DimenWrite {
 
     /**
@@ -13,7 +16,7 @@ public class DimenWrite {
      */
     public static void main(String[] args) {
         String path = "D:/dimens.xml";
-        float rate = 0.5F;// TODO: 2019/12/11 这个值需要根据设计尺寸计算，https://blog.csdn.net/raoqian156/article/details/103496781
+        float rate = 0.5F; //TODO: 2019/12/11 这个值需要根据设计尺寸计算<dp/px>  https://blog.csdn.net/raoqian156/article/details/103496781
         try {
             File file = new File(path);
             if (!file.getParentFile().exists()) {

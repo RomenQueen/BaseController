@@ -6,9 +6,11 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
+import android.support.v4.content.FileProvider;
 
 import com.hzaz.base.BASE;
 import com.hzaz.base.common_util.LOG;
@@ -78,7 +80,12 @@ public class DownloadIntentService extends IntentService {
             progress = (int) (range * 100 / Math.max(1, file.length()));
             //判断是否已下载完整
             if (range == file.length()) {
-                installApp(file);
+                if (mDownloadCallBack != null) {
+                    mDownloadCallBack.onProgress(progress);
+                    if (progress == 100) {
+                        mDownloadCallBack.onCompleted(file);
+                    }
+                }
                 return;
             }
         }
@@ -112,11 +119,8 @@ public class DownloadIntentService extends IntentService {
             public void onCompleted() {
                 LOG.d(TAG, "下载完成");
                 mNotifyManager.cancel(downloadId);
-
                 if (mDownloadCallBack != null) {
                     mDownloadCallBack.onCompleted(file);
-                } else {
-                    installApp(file);
                 }
             }
 
@@ -131,13 +135,33 @@ public class DownloadIntentService extends IntentService {
         });
     }
 
-    private void installApp(File file) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
-        startActivity(intent);
-    }
 
+    //    public static String FileProviderName = BuildConfig.APPLICATION_ID + ".fileProvider";//provider
+//<provider
+//    android:name="android.support.v4.content.FileProvider"
+//    android:authorities="${applicationId}.fileProvider"
+//    android:exported="false"
+//    android:grantUriPermissions="true">
+//            <meta-data
+//    android:name="android.support.FILE_PROVIDER_PATHS"
+//    android:resource="@xml/provider_paths" />
+//        </provider>
+    public static void installApp(Context context, File file, String FileProviderName) {
+        LOG.e("DownloadIntentService", "file == null->" + (file == null));
+        if (file == null) return;
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // 给目标应用一个临时授权
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            Uri contentUri = FileProvider.getUriForFile(context, FileProviderName, file);
+            intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
+        } else {
+            intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
+        context.startActivity(intent);
+    }
 
     public interface DownloadListener {
         void onProgress(int progress);
