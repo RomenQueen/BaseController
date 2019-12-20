@@ -8,6 +8,7 @@ import com.hzaz.base.net.RequestType;
 import com.hzaz.base.quick_base_ui.impl.WelcomeImpl;
 import com.hzaz.base.ui.CodeHelper;
 import com.rq.demo.R;
+import com.rq.demo.ui.MainController;
 
 
 public class WelcomePage implements WelcomeImpl {
@@ -38,7 +39,6 @@ public class WelcomePage implements WelcomeImpl {
         codeHelper.setListener(new CodeHelper.OnRunningListener() {
             @Override
             public void onRunningStart() {
-                ToastUtil.show("点击了关闭");
             }
 
             @Override
@@ -128,7 +128,7 @@ public class WelcomePage implements WelcomeImpl {
 
     @Override
     public void skip(BaseController view) {
-//        view.skip(LoginController.class);
+        view.skip(MainController.class);
     }
 
 }

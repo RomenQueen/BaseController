@@ -57,6 +57,7 @@ public class CodeHelper {
     }
 
     public String getRunStr(int second) {
+        if (runStr == null) return "" + second;
         return String.format(runStr, second);
     }
 
