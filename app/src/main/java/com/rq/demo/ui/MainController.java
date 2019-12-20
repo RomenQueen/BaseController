@@ -1,5 +1,7 @@
 package com.rq.demo.ui;
 
+import android.view.View;
+
 import com.hzaz.base.BaseController;
 import com.rq.demo.R;
 import com.rq.demo.contact.EaseContactList;
@@ -19,9 +21,9 @@ public class MainController extends BaseController {
     public void onViewCreated() {
         super.onViewCreated();
         EaseContactList list = getView(R.id.show);
-
+        setOnClickListener(R.id.click);
         List<EaseUser> contactList = new ArrayList<>();
-        contactList.add(new DebugUser("张三"));
+        contactList.add(new DebugUser("点击跳转数据传递"));
         contactList.add(new DebugUser("李四"));
         contactList.add(new DebugUser("王五"));
         contactList.add(new DebugUser("赵柳"));
@@ -43,6 +45,12 @@ public class MainController extends BaseController {
         contactList.add(new DebugUser("孙琦.05"));
         list.init(contactList);
         list.autoSort(true);
+    }
+
+    @Override
+    public void onClick(View v) {
+        super.onClick(v);
+        open(DataPassExampleCon.class);
     }
 
     class DebugUser implements EaseUser {

@@ -43,6 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
+import static com.hzaz.base.BaseActivity.TAG_OPEN_CODE;
+import static com.hzaz.base.BaseActivity.TAG_OPEN_FOR;
 
 /**
  * 用  Controller 代替 Activity 和 Fragment 简化维护
@@ -68,6 +70,14 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
 
     public <P extends BaseController> void openFor(Class<P> clazz, Object... pass) {
         BaseActivity.openFor(this, clazz, pass);
+    }
+
+    public <P extends BaseController> void openWith(Class<P> clazz, int requestCode, Object... pass) {
+        BaseActivity.openWith(this, requestCode, clazz, pass);
+    }
+
+    public boolean isOpenFor() {
+        return mActivity.getIntent().getBooleanExtra(TAG_OPEN_FOR, false);
     }
 
     public <P extends BaseController> void open(Class<P> clazz, Object... pass) {
@@ -168,16 +178,29 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         return mActivity.getIntent().getSerializableExtra(TAG_PASS + position);
     }
 
+    public int getOpenCode() {
+        int code = mActivity.getIntent().getIntExtra(TAG_OPEN_CODE, 0);
+        LOG.e("BaseController", "getOpenCode:" + code);
+        return code;
+    }
+
     public int getRequestCode() {
+        LOG.e("BaseController", "getRequestCode:" + requestCode);
         return requestCode;
     }
 
     public void setRequestCode(int requestCode) {
         this.requestCode = requestCode;
+        LOG.e("BaseController", "saveCode:" + requestCode);
     }
 
     protected void startActivityForResult(Intent intent) {
         setRequestCode((int) (System.currentTimeMillis() % (0xffff)));
+        mActivity.startActivityForResult(intent, requestCode);
+    }
+
+    protected void startActivityForResult(Intent intent, int requestCode) {
+        setRequestCode(requestCode);
         mActivity.startActivityForResult(intent, requestCode);
     }
 
@@ -193,12 +216,13 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     final boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         LOG.e("BaseController", "onActivityResult.186:");
         if (requestCode == getRequestCode() && resultCode == Activity.RESULT_OK && data != null) {
-            if (!onActivityOK(data)) {
-                return onActivityOther(requestCode, resultCode, data);
+            if (onResultOK(data)) {
+                return true;
+            } else {
+                return onResultOther(requestCode, resultCode, data);
             }
-            return onActivityOK(data);
         }
-        return onActivityOther(requestCode, resultCode, data);
+        return onResultOther(requestCode, resultCode, data);
     }
 
     public void finish() {
@@ -230,12 +254,30 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         mActivity.finish();
     }
 
-    protected boolean onActivityOK(Intent data) {
+    public void finish(int resultCode, Intent data) {
+        data.putExtra("back.from", getClass().getSimpleName());
+        mActivity.setResult(resultCode, data);
+        mActivity.finish();
+    }
+
+    public void finish(int resultCode, Serializable... back) {
+        Intent intent = new Intent();
+        if (back != null) {
+            for (int i = 0; i < back.length; i++) {
+                intent.putExtra(TAG_PASS + i, back[i]);
+            }
+        }
+        intent.putExtra("back.from", getClass().getSimpleName());
+        mActivity.setResult(resultCode, intent);
+        mActivity.finish();
+    }
+
+    protected boolean onResultOK(Intent data) {
         return false;
     }
 
-    protected boolean onActivityOther(int requestCode, int resultCode, @Nullable Intent data) {
-        LOG.e("BaseController", "onActivityOther.231:");
+    protected boolean onResultOther(int requestCode, int resultCode, @Nullable Intent data) {
+        LOG.e("BaseController", "onResultOther.231:");
         return false;
     }
 
@@ -846,6 +888,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
 
     public interface OnRefuseAndLoadListener {
         void refuse(int page);//页码
+
     }
 
     @Override

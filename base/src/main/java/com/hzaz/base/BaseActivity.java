@@ -60,6 +60,7 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
     }
 
     public static String TAG_OPEN_FOR = "open.for";
+    public static String TAG_OPEN_CODE = "open.code";
 
     public static <P extends BaseController> void openFor(BaseController controller, Class<P> clazz, Object... pass) {
         if (controller != null) {
@@ -67,6 +68,16 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
             Intent intent = getInnerIntent(target, clazz, pass);
             intent.putExtra(TAG_OPEN_FOR, true);
             controller.startActivityForResult(intent);
+        }
+    }
+
+    public static <P extends BaseController> void openWith(BaseController controller, int requestCode, Class<P> clazz, Object... pass) {
+        if (controller != null) {
+            BaseController target = getController(clazz, controller);
+            Intent intent = getInnerIntent(target, clazz, pass);
+            intent.putExtra(TAG_OPEN_FOR, true);
+            intent.putExtra(TAG_OPEN_CODE, requestCode);
+            controller.startActivityForResult(intent, requestCode);
         }
     }
 
