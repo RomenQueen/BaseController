@@ -44,7 +44,6 @@ import java.util.List;
 
 import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
 import static com.hzaz.base.BaseActivity.TAG_OPEN_CODE;
-import static com.hzaz.base.BaseActivity.TAG_OPEN_FOR;
 
 /**
  * 用  Controller 代替 Activity 和 Fragment 简化维护
@@ -62,22 +61,27 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     private View mRootView;
     private SparseArray<View> viewSparseArray = new SparseArray<>();            //页面子控件
     private SparseArray<Object> dataSparseArray = new SparseArray<>();          //页面数据
-    private int requestCode = 0;
+    private int innerPassCode = 0;
 
     public <P extends BaseController> void skip(Class<P> clazz, Object... pass) {
         BaseActivity.skip(this, clazz, pass);
     }
 
+    /**
+     * 普通的单业务数据专递
+     */
     public <P extends BaseController> void openFor(Class<P> clazz, Object... pass) {
         BaseActivity.openFor(this, clazz, pass);
     }
 
+    /**
+     * 多业务数据传递
+     *
+     * @param requestCode 业务标识编码
+     * @see #getRequestCode()
+     */
     public <P extends BaseController> void openWith(Class<P> clazz, int requestCode, Object... pass) {
         BaseActivity.openWith(this, requestCode, clazz, pass);
-    }
-
-    public boolean isOpenFor() {
-        return mActivity.getIntent().getBooleanExtra(TAG_OPEN_FOR, false);
     }
 
     public <P extends BaseController> void open(Class<P> clazz, Object... pass) {
@@ -178,36 +182,37 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         return mActivity.getIntent().getSerializableExtra(TAG_PASS + position);
     }
 
-    public int getOpenCode() {
+    /**
+     * @return 请求编码
+     * {@link BaseActivity#openFor(BaseController, Class, Object...) getRequestCode()>0}
+     * {@link BaseActivity#openWith(BaseController, int, Class, Object...) int --> getRequestCode()}
+     * {@link BaseController#openFor(Class, Object...) getRequestCode()>0}
+     * {@link BaseController#openWith(Class, int, Object...) int --> getRequestCode()}
+     */
+    public int getRequestCode() {
         int code = mActivity.getIntent().getIntExtra(TAG_OPEN_CODE, 0);
-        LOG.e("BaseController", "getOpenCode:" + code);
+        LOG.e("BaseController", "getRequestCode:" + code);
         return code;
     }
 
-    public int getRequestCode() {
-        LOG.e("BaseController", "getRequestCode:" + requestCode);
-        return requestCode;
+    int getInnerPassCode() {
+        LOG.e("BaseController", "getInnerPassCode:" + innerPassCode);
+        return innerPassCode;
     }
 
-    public void setRequestCode(int requestCode) {
-        this.requestCode = requestCode;
+    void setInnerPassCode(int requestCode) {
+        this.innerPassCode = requestCode;
         LOG.e("BaseController", "saveCode:" + requestCode);
     }
 
     protected void startActivityForResult(Intent intent) {
-        setRequestCode((int) (System.currentTimeMillis() % (0xffff)));
-        mActivity.startActivityForResult(intent, requestCode);
+        setInnerPassCode((int) (System.currentTimeMillis() % (0xffff)));
+        mActivity.startActivityForResult(intent, innerPassCode);
     }
 
     protected void startActivityForResult(Intent intent, int requestCode) {
-        setRequestCode(requestCode);
+        setInnerPassCode(requestCode);
         mActivity.startActivityForResult(intent, requestCode);
-    }
-
-    protected boolean isBackFrom(Intent data, Class clazz) {
-        if (data == null || clazz == null) return false;
-        LOG.e("BaseController", "isBackFrom.178:" + data.getStringExtra("back.from"));
-        return TextUtils.equals(data.getStringExtra("back.from"), clazz.getSimpleName());
     }
 
     /**
@@ -215,7 +220,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
      */
     final boolean onActivityResult(int requestCode, int resultCode, Intent data) {
         LOG.e("BaseController", "onActivityResult.186:");
-        if (requestCode == getRequestCode() && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == getInnerPassCode() && resultCode == Activity.RESULT_OK && data != null) {
             if (onResultOK(data)) {
                 return true;
             } else {
@@ -243,19 +248,18 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
                 intent.putExtra(TAG_PASS + i, back[i]);
             }
         }
-        intent.putExtra("back.from", getClass().getSimpleName());
         mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
     }
 
+
+
     public void finishOK(Intent data) {
-        data.putExtra("back.from", getClass().getSimpleName());
         mActivity.setResult(Activity.RESULT_OK, data);
         mActivity.finish();
     }
 
     public void finish(int resultCode, Intent data) {
-        data.putExtra("back.from", getClass().getSimpleName());
         mActivity.setResult(resultCode, data);
         mActivity.finish();
     }
@@ -267,7 +271,6 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
                 intent.putExtra(TAG_PASS + i, back[i]);
             }
         }
-        intent.putExtra("back.from", getClass().getSimpleName());
         mActivity.setResult(resultCode, intent);
         mActivity.finish();
     }
@@ -855,11 +858,14 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         return mActivity.getIntent();
     }
 
-    protected String getString(int strRes) {
+    public String getString(int strRes) {
         if (mActivity == null) return "";
         return mActivity.getString(strRes);
     }
 
+    /**
+     * @return 是否显示状态栏 true -> 不显示
+     */
     public boolean isFullScreen() {
         return false;
     }
@@ -868,6 +874,9 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         return false;
     }
 
+    /**
+     * @return 是否布局到正常状态栏位置 true 布局会上提
+     */
     public boolean underStatusBar() {
         return false;
     }

@@ -20,13 +20,13 @@ public class DataPassExampleCon2 extends BaseController {
     public void onViewCreated() {
         super.onViewCreated();
         setOnClickListener(R.id.back);
-        setData2View(R.id.input2, getOpenCode() > 0 ? View.VISIBLE : View.GONE);
+        setData2View(R.id.input2, getRequestCode() > 0 ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        if (getOpenCode() == REQUEST_CODE) {
+        if (getRequestCode() == REQUEST_CODE) {
             String input = getInput(R.id.input);
             int code = Integer.parseInt(getInput(R.id.input2));
             finish(code, input);

@@ -12,7 +12,7 @@ import com.rq.demo.R;
  * 数据传递演示
  * DataPassExampleCon  (E1)  ->  DataPassExampleCon2 (E2)
  * E1 在 onResultOK 、 onResultOther 中处理回调结果
- * E2 可以根据 getOpenCode() 判断意图 分别以 finish**返回结果
+ * E2 可以根据 getRequestCode() 判断意图 分别以 finish**返回结果
  * 可以多传多
  */
 public class DataPassExampleCon extends BaseController {

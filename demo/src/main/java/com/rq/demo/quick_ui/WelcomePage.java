@@ -2,7 +2,6 @@ package com.rq.demo.quick_ui;
 
 import com.hzaz.base.BaseController;
 import com.hzaz.base.common_util.LOG;
-import com.hzaz.base.common_util.ToastUtil;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.RequestType;
 import com.hzaz.base.quick_base_ui.impl.WelcomeImpl;
@@ -12,12 +11,6 @@ import com.rq.demo.ui.MainController;
 
 
 public class WelcomePage implements WelcomeImpl {
-
-    public static void main(String[] args) {
-        String param = "%s 秒";
-        System.out.println(String.format(param, 6));
-    }
-
 
     @Override
     public int getLayoutId() {
