@@ -14,7 +14,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
@@ -251,7 +250,6 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         mActivity.setResult(Activity.RESULT_OK, intent);
         mActivity.finish();
     }
-
 
 
     public void finishOK(Intent data) {
@@ -698,15 +696,15 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
 
     protected final synchronized void setDataToView(View view, Object obj) {
 
+        if (view == null) {
+            LOG.utilLog("ViewEmpty");
+            return;
+        }
         if (fillCustomViewData(view, obj)) {
             return;
         }
         if (obj == null) {
             LOG.utilLog("DataEmpty");
-            return;
-        }
-        if (view == null) {
-            LOG.utilLog("ViewEmpty");
             return;
         }
         if (obj instanceof Integer && ((int) obj == View.VISIBLE || (int) obj == View.GONE || (int) obj == View.INVISIBLE)) {
@@ -730,7 +728,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         }
     }
 
-    protected boolean fillCustomViewData(View view, Object obj) {
+    protected boolean fillCustomViewData(@NonNull View view, @Nullable Object obj) {
         return false;
     }
 
@@ -854,6 +852,10 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         mActivity.startActivity(intent);
     }
 
+    /**
+     * 适用于 跳转特殊ACT的回参获取
+     */
+    @Deprecated
     protected Intent getIntent() {
         return mActivity.getIntent();
     }
@@ -904,18 +906,23 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     public void onClick(View v) {
     }
 
+    /**
+     * @deprecated scrollY 计算方式不科学，只适用于单一子项的RV
+     */
     public boolean recyclerToTop(final int hideViewId, int listId) {
         if (getView(hideViewId) == null || getView(listId) == null) {
             return false;
         }
         if (getView(listId) instanceof RecyclerView) {
             ((RecyclerView) getView(listId)).addOnScrollListener(new RecyclerView.OnScrollListener() {
+                int scrollY = 0;
+
                 @Override
                 public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                     int targetHeight = getView(hideViewId).getMeasuredHeight();
-                    int sY = recyclerView.getScrollY();
-                    setData2View(hideViewId, sY > targetHeight ? View.GONE : View.VISIBLE);
-                    LOG.e("BaseController", sY + ".757:" + targetHeight);
+                    scrollY += dy;
+                    setData2View(hideViewId, Math.abs(scrollY) > targetHeight ? View.GONE : View.VISIBLE);
+                    LOG.e("BaseController", scrollY + ".757:" + targetHeight);
                 }
             });
             return true;

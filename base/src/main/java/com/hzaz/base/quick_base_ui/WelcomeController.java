@@ -28,7 +28,7 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * Created by raoqian on 2019/11/15.
+ * 开屏页
  */
 
 public class WelcomeController extends BaseController implements CommonDialog.OnConfirmClickListener, DownloadIntentService.DownloadListener {
