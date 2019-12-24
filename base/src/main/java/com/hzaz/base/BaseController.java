@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.hzaz.base.common_util.AppUtil;
-import com.hzaz.base.common_util.ImageLoadUtil;
+import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 import com.hzaz.base.net.BaseBean;
@@ -815,7 +815,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
 
     @Override
     public Activity getContextActivity() {
-        return mActivity;
+        return getActivity();
     }
 
     @Override

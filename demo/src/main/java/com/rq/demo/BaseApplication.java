@@ -14,6 +14,7 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         BASE.init(this, "demo");
+//        ImageLoadUtil.init(new GlideProxy());  网络图片加载框架，可自行切换，默认Glide
         Map<String, String> head = new HashMap<>();// TODO: 2019/12/11 测试 添加公共头
         head.put("token", "123321");
         BASE.setHead(head);

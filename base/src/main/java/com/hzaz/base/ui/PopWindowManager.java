@@ -1,5 +1,6 @@
 package com.hzaz.base.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -15,7 +16,7 @@ import android.widget.ListView;
 
 import com.hzaz.base.BaseView;
 import com.hzaz.base.R;
-import com.hzaz.base.common_util.ImageLoadUtil;
+import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.ui.pop.CustomPopWindow;
 import com.hzaz.base.ui.pop.PopGridAdapter;
 
@@ -337,19 +338,19 @@ public class PopWindowManager {
         return popWindow;
     }
 
-    public static void showImage(BaseView view, String path) {
-        View contentView = LayoutInflater.from(view.getContextActivity()).inflate(R.layout.pop_image, null);
-        final CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(view.getContextActivity())
+    public static void showImage(Activity view, String path) {
+        View contentView = LayoutInflater.from(view).inflate(R.layout.pop_image, null);
+        final CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(view)
                 .setView(contentView)
                 .sizeAs(null).create();
         ImageView img = contentView.findViewById(R.id.iv_show);
-        ImageLoadUtil.display(view.getContextActivity(), path, img);
+        ImageLoadUtil.display(view, path, img);
         contentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popWindow.dissmiss();
             }
         });
-        popWindow.showAtLocation(view.getContextActivity().getWindow().getDecorView(), Gravity.CENTER, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        popWindow.showAtLocation(view.getWindow().getDecorView(), Gravity.CENTER, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 }

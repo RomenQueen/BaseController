@@ -1,8 +1,11 @@
 package com.rq.demo.ui;
 
 import android.view.View;
+import android.widget.ImageView;
 
 import com.hzaz.base.BaseController;
+import com.hzaz.base.common_util.image.ImageLoadUtil;
+import com.hzaz.base.ui.PopWindowManager;
 import com.rq.demo.R;
 import com.rq.demo.contact.EaseContactList;
 import com.rq.demo.contact.EaseUser;
@@ -45,12 +48,16 @@ public class MainController extends BaseController {
         contactList.add(new DebugUser("孙琦.05"));
         list.init(contactList);
         list.autoSort(true);
+        ImageLoadUtil.display(getContextActivity(), "", 0, new ImageView(getContextActivity()), 0, 0, 0,6);
     }
+
+    String url = "https://img2.3lian.com/2014/f6/173/d/51.jpg";
 
     @Override
     public void onClick(View v) {
         super.onClick(v);
-        open(DataPassExampleCon.class);
+        PopWindowManager.showImage(getActivity(), url);
+//        open(DataPassExampleCon.class);
     }
 
     class DebugUser implements EaseUser {

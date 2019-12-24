@@ -1,4 +1,4 @@
-package com.hzaz.base.common_util.glide;
+package com.hzaz.base.common_util.image;
 
 import android.content.Context;
 import android.content.res.Resources;
