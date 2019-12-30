@@ -6,7 +6,7 @@ import com.franmontiel.persistentcookiejar.ClearableCookieJar;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
-import com.hzaz.base.App;
+import com.hzaz.base.BASE;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -71,7 +71,7 @@ public class RetrofitUtils {
         //配置Retrofit信息
         Retrofit retrofit = new Retrofit.Builder()
                 .client(build)
-                .baseUrl(App.getBaseUrl())
+                .baseUrl(BASE.getBaseUrl())
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
