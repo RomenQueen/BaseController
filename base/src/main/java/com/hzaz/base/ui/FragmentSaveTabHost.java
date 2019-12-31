@@ -119,7 +119,7 @@ public class FragmentSaveTabHost<C extends BaseController> extends TabHost imple
         mOnTabChangeListener = l;
     }
 
-    public void addTab(@NonNull TabSpec tabSpec, Class<? extends BaseController> controller, @Nullable Bundle args) {
+    public void addTab(@NonNull TabSpec tabSpec, Class<? extends BaseController> controller, @Nullable Bundle args, int position) {
         tabSpec.setContent(new DummyTabFactory(mContext));
         final String tag = tabSpec.getTag();
 //        if (controller == null) {
@@ -128,7 +128,7 @@ public class FragmentSaveTabHost<C extends BaseController> extends TabHost imple
 //            LOG.e("FragmentSaveTabHost", "LINE:202");
 //            return;
 //        }
-        final FragmentTabInfo info = new FragmentTabInfo(tag, controller, args);
+        final FragmentTabInfo info = new FragmentTabInfo(tag, controller, args, position);
 
         if (mAttached) {
             // If we are already attached to the window, then check to make
@@ -207,6 +207,24 @@ public class FragmentSaveTabHost<C extends BaseController> extends TabHost imple
         setCurrentTabByTag(ss.curTab);
     }
 
+    public interface OnChangeInterceptor {
+        boolean changeAble(String tabId, int position);
+    }
+
+    OnChangeInterceptor mOnChangeInterceptor;
+
+    public void setChangeInterceptor(OnChangeInterceptor interceptor) {
+        mOnChangeInterceptor = interceptor;
+    }
+
+    @Override
+    public void setCurrentTab(int index) {
+        if (mOnChangeInterceptor != null && !mOnChangeInterceptor.changeAble("",index)) {
+            return ;
+        }
+        super.setCurrentTab(index);
+    }
+
     @Override
     public void onTabChanged(String tabId) {
         if (mAttached) {
@@ -214,7 +232,7 @@ public class FragmentSaveTabHost<C extends BaseController> extends TabHost imple
             if (ft != null) {
                 try {
                     ft.commitAllowingStateLoss();
-                } catch (IllegalStateException e) {// todo 有时间研究 ： 腾讯Bugly 63261
+                } catch (IllegalStateException e) {
                     e.printStackTrace();
                 }
             }
@@ -274,12 +292,14 @@ public class FragmentSaveTabHost<C extends BaseController> extends TabHost imple
         Class<? extends BaseController> _class;
         final @Nullable
         Bundle args;
+        int position;
         Fragment fragment;
 
-        FragmentTabInfo(@NonNull String _tag, Class<? extends BaseController> _class, @Nullable Bundle _args) {
+        FragmentTabInfo(@NonNull String _tag, Class<? extends BaseController> _class, @Nullable Bundle _args, int position) {
             this.tag = _tag;
             this._class = _class;
             this.args = _args;
+            this.position = position;
         }
     }
 

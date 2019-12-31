@@ -205,4 +205,11 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
     public void onResponseError(@NonNull RequestType type) {
 
     }
+
+    public boolean onBreakPress() {
+        if (mPresenter != null) {
+            return mPresenter.onBreakBack();
+        }
+        return false;
+    }
 }

@@ -23,9 +23,9 @@ import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
 import com.hzaz.base.common_util.AppUtil;
-import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
+import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.HttpParamUtil;
 import com.hzaz.base.net.RequestType;
@@ -382,8 +382,11 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         return mRootView;
     }
 
-    public void onBackPressed() {
-        mActivity.finish();
+    /**
+     * {@link Activity#onBackPressed()}
+     */
+    public boolean onBreakBack() {
+        return false;
     }
 
     public boolean fragmentImmersionEnable() {
@@ -888,6 +891,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     }
 
     protected boolean isShow() {
+        if (getActivity() == null) return false;
         if (AppUtil.isForeground(getActivity())) {
             return true;
         }

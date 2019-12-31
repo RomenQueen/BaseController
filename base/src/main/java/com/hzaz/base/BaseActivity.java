@@ -352,8 +352,7 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
 
     @Override
     public void onBackPressed() {
-        if (mPresenter != null) {
-            mPresenter.onBackPressed();
+        if (mPresenter != null && mPresenter.onBreakBack()) {
             return;
         }
         super.onBackPressed();

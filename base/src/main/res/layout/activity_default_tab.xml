@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- 存放主要页面内容 -->
+    <FrameLayout
+        android:id="@+id/main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/main_tab_height" />
+
+    <com.hzaz.base.ui.FragmentSaveTabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/main_tab_height"
+        android:layout_gravity="bottom"
+        android:background="@android:color/white">
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0" />
+
+    </com.hzaz.base.ui.FragmentSaveTabHost>
+
+    <View
+        style="@style/HorizontalLine"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="@dimen/main_tab_height" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:weightSum="5">
+
+        <!--
+                    android:background="@drawable/main_tab_center_click"-->
+        <LinearLayout
+            android:id="@+id/iv_main_parent"
+            android:layout_width="@dimen/padding_160px"
+            android:layout_height="@dimen/main_tab_center_height"
+            android:gravity="bottom|center_horizontal"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/padding_20px">
+
+            <!--
+                            android:src="@mipmap/icon_to_recoder" -->
+            <ImageView
+                android:id="@+id/iv_main_center"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside" />
+
+            <TextView
+                android:id="@+id/iv_main_center_bottom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/padding_20px"
+                android:paddingBottom="@dimen/padding_20px"
+                android:text="新增活动"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <View
+        android:id="@+id/pop_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/main_tab_height"
+        android:background="#FFF"
+        android:visibility="gone" />
+</FrameLayout>
