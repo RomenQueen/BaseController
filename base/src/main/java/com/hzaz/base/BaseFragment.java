@@ -208,7 +208,7 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
 
     public boolean onBreakPress() {
         if (mPresenter != null) {
-            return mPresenter.onBreakBack();
+            return mPresenter.interruptBack();
         }
         return false;
     }

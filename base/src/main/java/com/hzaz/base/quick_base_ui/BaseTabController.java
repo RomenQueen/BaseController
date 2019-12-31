@@ -91,7 +91,7 @@ public abstract class BaseTabController extends BaseController implements TabHos
 //        setImmersion(!"我的".equals(tabId), R.color.colorPrimary_ff2a3b);
     }
     @Override
-    public boolean onBreakBack() {
+    public boolean interruptBack() {
         BaseFragment fragment = (BaseFragment) getActivity().getSupportFragmentManager().findFragmentByTag(fraTag);
         if (fragment != null) {
             return fragment.onBreakPress();

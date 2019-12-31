@@ -385,7 +385,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     /**
      * {@link Activity#onBackPressed()}
      */
-    public boolean onBreakBack() {
+    public boolean interruptBack() {
         return false;
     }
 
