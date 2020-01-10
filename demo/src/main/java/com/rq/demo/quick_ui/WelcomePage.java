@@ -4,7 +4,6 @@ import com.hzaz.base.BaseController;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.RequestType;
-import com.hzaz.base.quick_base_ui.BaseTabController;
 import com.hzaz.base.quick_base_ui.impl.WelcomeImpl;
 import com.hzaz.base.ui.CodeHelper;
 import com.rq.demo.R;
