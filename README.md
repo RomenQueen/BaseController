@@ -10,10 +10,12 @@
 public class WelcomeActivity extends BaseActivity<WelcomeController> {
 }
 ```
-     4.之后所有Controller继承自BaseCobtroller，具体使用查看代码注释
+     4.之后所有Controller继承自BaseController，具体使用查看代码注释
      5.**Controller主要描述
        a.getLayoutId() 每个界面必须实现的抽象方法，返回布局文件ID,可进行初始化但不建议
        b.onViewCreated() 界面创建完成之后的回调
        c.setData2View(int,Object) 数据填充方法，前者为ViewId 后者为填充内容，适用于
          所有视图，查看代码，未收录的视图或者特殊处理可以重写 fillCustomViewData 以取
          缔常规用法
+     6.加入打包输出代码控制，可以轻松从输出文件名看出版本信息，详见../demo/build.gradle
+     7.初步加入接口版，见Example1、Example1Impl、ExampleActivity的差异

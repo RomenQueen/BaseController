@@ -132,6 +132,10 @@ public class BASE {
         return "";
     }
 
+    public static boolean isDebug() {
+        return BuildConfig.LOG_DEBUG;
+    }
+
     public static boolean isRQ() {//调试版本，跳过某些判断
         return new File(ROOT_DIR + "/rq").exists();
     }

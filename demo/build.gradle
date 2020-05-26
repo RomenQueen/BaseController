@@ -1,7 +1,26 @@
 apply plugin: 'com.android.application'
 
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+
+def currentTime = releaseTime()
+
+static def releaseTime() {
+    DateFormat df = new SimpleDateFormat("MMdd_HHmm")
+    return df.format(Calendar.getInstance(Locale.CHINA).getTime())
+}
+
 android {
     compileSdkVersion 28
+    buildToolsVersion "28.0.3"
+//    signingConfigs {
+//        release {
+//            keyAlias 'demo'
+//            keyPassword '123456'
+//            storeFile file('../demo.jks')
+//            storePassword '123456'
+//        }
+//    }
     defaultConfig {
         applicationId "com.rq.demo"
         minSdkVersion 19
@@ -11,8 +30,36 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+//            signingConfig signingConfigs.release
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "boolean", "URL_DEBUG", "false"
+            minifyEnabled true
+            zipAlignEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField("String", "apkBuildTime", "\"${currentTime}\"")
+            applicationVariants.all { variant ->
+                variant.outputs.all { output ->
+                    def fileName
+                    if (variant.buildType.name == "release") {
+                        // 正式包输出apk名称为
+                        fileName = "R-DEMO-v${defaultConfig.versionName}-${currentTime}.apk"
+                    } else {
+                        // 测试包输出apk名称为
+                        fileName = "D-DEMO-v${defaultConfig.versionName}-${currentTime}.apk"
+                    }
+                    def outFile = output.outputFile
+                    if (outFile != null && outFile.name.endsWith('.apk')) {
+                        outputFileName = fileName  //  output.outputFile 改为 outputFileName
+                    }
+                }
+            }
+        }
+        debug {
+//            signingConfig signingConfigs.release
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "URL_DEBUG", "true"
+            buildConfigField("String", "apkBuildTime", "\"${currentTime}\"")
         }
     }
 }

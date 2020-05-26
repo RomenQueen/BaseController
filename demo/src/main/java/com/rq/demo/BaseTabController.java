@@ -1,4 +1,4 @@
-package com.hzaz.base.quick_base_ui;
+package com.rq.demo;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.hzaz.base.BaseController;
 import com.hzaz.base.BaseFragment;
-import com.hzaz.base.ExampleController;
 import com.hzaz.base.R;
 import com.hzaz.base.common_util.ToastUtil;
 import com.hzaz.base.ui.FragmentSaveTabHost;

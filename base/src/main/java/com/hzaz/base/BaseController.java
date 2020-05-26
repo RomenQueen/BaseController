@@ -115,7 +115,6 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         }
     }
 
-
     public int getActivityFlag() {
         return 0;
     }
@@ -336,6 +335,19 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
     }
 
     public void setData2View(final int viewId, final Object obj) {
+        if (Looper.myLooper() == Looper.getMainLooper()) {//主线程
+            setDataToView(viewId, obj);
+        } else {
+            mainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    setDataToView(viewId, obj);
+                }
+            });
+        }
+    }
+
+    public void setData2View(final View viewId, final Object obj) {
         if (Looper.myLooper() == Looper.getMainLooper()) {//主线程
             setDataToView(viewId, obj);
         } else {

@@ -39,7 +39,6 @@ public class WelcomeController extends BaseController implements CommonDialog.On
     public void onViewCreated() {
         super.onViewCreated();
         toNextView();
-        LOG.e("WelcomeController", "LINE:48");
         bean.init(this);
     }
 
@@ -146,10 +145,8 @@ public class WelcomeController extends BaseController implements CommonDialog.On
             }
             dialog.show(bean);
             dialog.setClickListener(this);
-            LOG.e("WelcomeController", "needStopToDownload.152:");
             return true;
         }
-        LOG.e("WelcomeController", "needStopToDownload.155:");
         return false;
     }
 
