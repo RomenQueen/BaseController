@@ -22,6 +22,7 @@ public class BASE {
     private static int mNetErrorToast;
     private static String ROOT_DIR;
     private static String BASE_DIR;
+    public static int PAGE_SIZE_START = 1;
 
     private static String url = "";
     private static String urlAddress = "";

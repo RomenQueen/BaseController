@@ -19,3 +19,4 @@ public class WelcomeActivity extends BaseActivity<WelcomeController> {
          缔常规用法
      6.加入打包输出代码控制，可以轻松从输出文件名看出版本信息，详见../demo/build.gradle
      7.初步加入接口版，见Example1、Example1Impl、ExampleActivity的差异
+     8.加入注解版本，见Example1Impl的使用

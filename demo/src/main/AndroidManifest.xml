@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ExampleBaseActivity" />
+        <activity android:name=".ImplBaseActivity" />
         <activity android:name=".ExampleActivity" />
     </application>
 </manifest>

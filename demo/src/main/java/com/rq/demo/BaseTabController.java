@@ -37,8 +37,8 @@ public abstract class BaseTabController extends BaseController implements TabHos
             R.drawable.selector_home_pic_demo,
     };
     private Class fragmentArray[] = {
-            ExampleController.class,//首页
-            ExampleController.class,//团队
+            GuideController.class,//首页
+            GuideController.class,//团队
             null,//空
             null,//直播
             null//空

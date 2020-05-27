@@ -140,7 +140,7 @@ public class LOG {
 //        String simpleName = classname.substring(classname.lastIndexOf(".") + 1);
         if (stacks != null) {
             stringBuffer.append("\t【异常起源】>>\t");
-            int start = stacks.length - 1;//Math.min(stacks.length - 1, 10);
+            int start = Math.min(stacks.length - 1, 10);
             int recoderIndex = start;
 
             for (int i = start; i >= 0; i--) {

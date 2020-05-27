@@ -1,11 +1,13 @@
 package com.hzaz.base;
 
-import android.content.Context;
+import android.app.Activity;
+import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,19 +25,44 @@ import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.impl_part.BaseControllerImpl;
+import com.hzaz.base.impl_part.OnClick;
+import com.hzaz.base.impl_part.OnRefuseAndLoad;
+import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
 import com.hzaz.base.impl_part.ViewController;
 import com.rq.rvlibrary.BaseAdapter;
 import com.rq.rvlibrary.RecyclerUtil;
+import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
+import static com.hzaz.base.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAndLoad;
 
 public class ControllerProxy implements ViewController {
     BaseControllerImpl impl;
-    Context mContext;
+    Activity mActivity;
+    Fragment mFragment;
     View rootView;
 
-    public ControllerProxy(Context con, Class impl) {
+    ControllerProxy(Activity con, Class impl) {
         try {
             this.impl = (BaseControllerImpl) impl.newInstance();
-            this.mContext = con;
+            this.mActivity = con;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    ControllerProxy(Fragment con, Class impl) {
+        try {
+            this.impl = (BaseControllerImpl) impl.newInstance();
+            this.mActivity = con.getActivity();
+            this.mFragment = con;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InstantiationException e) {
@@ -44,10 +71,10 @@ public class ControllerProxy implements ViewController {
     }
 
     public View getLayoutView() {
-        final LayoutInflater inflater = LayoutInflater.from(mContext);
+        final LayoutInflater inflater = LayoutInflater.from(mActivity);
         if (impl == null) {
             Log.e("ControllerProxy", "初始化异常，请阅读文档");
-            return new View(mContext);
+            return new View(mActivity);
         }
         View root;
         if (impl.needOutScroll()) {//是否添加外部滑动控件，可自行适配小屏手机
@@ -92,7 +119,103 @@ public class ControllerProxy implements ViewController {
     }
 
     public void initView() {
+        if (impl instanceof View.OnClickListener) {
+            Method method = null;
+            try {
+                method = impl.getClass().getDeclaredMethod("onClick", View.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            if (method == null) return;
+            Annotation[] annotations = method.getAnnotations();
+            if (annotations.length > 0) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof OnClick) {
+                        OnClick inject = (OnClick) annotation;
+                        int[] value = inject.value();
+                        if (value.length > 0) {
+                            for (int id : value) {
+                                setData2View(id, impl);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (impl instanceof OnRefuseAndLoadListener) {
+            Method method = null;
+            try {
+                method = impl.getClass().getDeclaredMethod("refuse", int.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            if (method == null) return;
+            Annotation[] annotations = method.getAnnotations();
+            if (annotations.length > 0) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof OnRefuseAndLoad) {
+                        OnRefuseAndLoad inject = (OnRefuseAndLoad) annotation;
+                        int id = inject.viewId();
+                        if (id > 0) {
+                            setOnRefuseAndLoadListener(
+                                    id,
+                                    (OnRefuseAndLoadListener) impl
+                                    , inject.loadAble()
+                                    , inject.refuseAble());
+                        }
+                    }
+                }
+            }
+        }
         impl.initView();
+    }
+
+    /**
+     * RefreshAble LoadAble 默认 true
+     * 推荐使用 @OnRefuseAndLoad
+     * @see OnRefuseAndLoad
+     * @param refuseAndLoad boolean + boolean >>LoadAble + RefreshAble
+     *                      null 根据 SmartRefreshLayout父布局 外层高度 与 SmartRefreshLayout 高度自行设置 LoadAble
+     */
+    @Deprecated
+    public void setOnRefuseAndLoadListener(int viewId, final OnRefuseAndLoadListener listener, Object... refuseAndLoad) {
+        final SmartRefreshLayout rsLayout = getView(viewId);
+        if (rsLayout == null || listener == null) return;
+        rsLayout.setTag(R.id.tag_refuse_page, BASE.PAGE_SIZE_START);
+        rsLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(@NonNull RefreshLayout refreshLayout) {
+                rsLayout.setTag(R.id.tag_refuse_page, BASE.PAGE_SIZE_START);
+                listener.refuse(BASE.PAGE_SIZE_START);
+            }
+
+        });
+        rsLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshlayout) {
+                int page = (int) rsLayout.getTag(R.id.tag_refuse_page);
+                page++;
+                rsLayout.setTag(R.id.tag_refuse_page, page);
+                listener.refuse(page);
+            }
+        });
+        if (refuseAndLoad.length > 0) {
+            if (refuseAndLoad[0] instanceof Boolean) {
+                rsLayout.setEnableLoadMore((Boolean) refuseAndLoad[0]);
+            } else {
+                rsLayout.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                    @Override
+                    public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                        rsLayout.setEnableLoadMore(v.getHeight() >= ((View) v.getParent().getParent()).getHeight());
+                    }
+                });
+            }
+        }
+        if (refuseAndLoad.length > 1) {
+            if (refuseAndLoad[1] instanceof Boolean) {
+                rsLayout.setEnableRefresh((Boolean) refuseAndLoad[1]);
+            }
+        }
     }
 
     @Override
@@ -101,13 +224,27 @@ public class ControllerProxy implements ViewController {
     }
 
     @Override
-    public void setOnClickListener(int[] ids, View.OnClickListener clickListener) {
-        if (ids != null && clickListener != null) {
-            for (int i = 0; i < ids.length; i++) {
-                if (getView(ids[i]) != null) getView(ids[i]).setOnClickListener(clickListener);
-            }
-        }
+    public void onResume() {
+        impl.onResume();
+    }
 
+    @Override
+    public void onPause() {
+        impl.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        impl.onDestroy();
+    }
+
+    @Override
+    public void post(Runnable action, long time) {
+        if (time <= 0) {
+            mainHandler.post(action);
+        } else {
+            mainHandler.postDelayed(action, time);
+        }
     }
 
     Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -129,28 +266,29 @@ public class ControllerProxy implements ViewController {
     }
 
     private SparseArray<View> viewSparseArray = new SparseArray<>();            //页面子控件
-    private SparseArray<Object> dataSparseArray = new SparseArray<>();          //页面数据
 
     private void setDataToView(int viewId, Object object) {
         if (viewSparseArray.get(viewId) != null) {
-            setDataToView(viewSparseArray.get(viewId), object);
+            finalSetDataToView(viewSparseArray.get(viewId), object);
         } else {
             View v = getView(viewId);
-            LOG.d("BaseController", viewId + ".setDataToView  " + viewSparseArray.indexOfValue(v));
+            LOG.d("BaseController", viewId + ".finalSetDataToView  " + viewSparseArray.indexOfValue(v));
             if (v != null) {
                 if (viewSparseArray.indexOfValue(v) < 0) {
                     viewSparseArray.append(viewId, v);
                 }
-                setDataToView(v, object);
+                finalSetDataToView(v, object);
+            } else {
+                LOG.utilLog("Can't find View with id -> ");
             }
         }
     }
 
-    public View getView(int viewId) {
+    public <T extends View> T getView(int viewId) {
         return rootView.findViewById(viewId);
     }
 
-    protected final synchronized void setDataToView(View view, Object obj) {
+    private final void finalSetDataToView(View view, Object obj) {
         if (view == null) {
             LOG.utilLog("ViewEmpty");
             return;
@@ -162,8 +300,43 @@ public class ControllerProxy implements ViewController {
             LOG.utilLog("DataEmpty");
             return;
         }
+        if (obj instanceof View.OnClickListener) {
+            view.setOnClickListener((View.OnClickListener) obj);
+            return;
+        }
         if (obj instanceof Integer && ((int) obj == View.VISIBLE || (int) obj == View.GONE || (int) obj == View.INVISIBLE)) {
             view.setVisibility((int) obj);
+            return;
+        }
+        if (obj instanceof ViewParam) {
+            if (obj == ViewParam.ENABLE) {
+                view.setEnabled(true);
+            } else if (obj == ViewParam.UNABLE) {
+                view.setEnabled(false);
+            } else if (obj == ViewParam.CHECKABLE) {
+                view.setClickable(true);
+            } else if (obj == ViewParam.UNCHECKABLE) {
+                view.setClickable(false);
+            }
+            return;
+        }
+        if (obj instanceof OnRefuseAndLoadListener.Status && view instanceof SmartRefreshLayout) {
+            if (obj == FinishRefuseAndLoad) {
+                ((SmartRefreshLayout) view).finishLoadMore();
+                ((SmartRefreshLayout) view).finishRefresh();
+            } else if (obj == OnRefuseAndLoadListener.Status.FinishLoad) {
+                ((SmartRefreshLayout) view).finishLoadMore();
+            } else if (obj == OnRefuseAndLoadListener.Status.FinishRefuse) {
+                ((SmartRefreshLayout) view).finishRefresh();
+            } else if (obj == OnRefuseAndLoadListener.Status.loadAble_False) {
+                ((SmartRefreshLayout) view).setEnableLoadMore(false);
+            } else if (obj == OnRefuseAndLoadListener.Status.loadable_True) {
+                ((SmartRefreshLayout) view).setEnableLoadMore(true);
+            } else if (obj == OnRefuseAndLoadListener.Status.refreshable_False) {
+                ((SmartRefreshLayout) view).setEnableRefresh(false);
+            } else if (obj == OnRefuseAndLoadListener.Status.refreshable_True) {
+                ((SmartRefreshLayout) view).setEnableRefresh(true);
+            }
             return;
         }
         if (obj instanceof Boolean) {
@@ -180,6 +353,8 @@ public class ControllerProxy implements ViewController {
             } else {
                 fillRecyclerViewData((RecyclerView) view, obj);
             }
+        } else {
+            LOG.e(impl.getClass().getSimpleName(), "ControllerProxy can't find finalSetDataToView(" + view.getClass().getSimpleName() + ",Object),please Override Method fillCustomViewData and return true");
         }
     }
 
@@ -191,7 +366,7 @@ public class ControllerProxy implements ViewController {
         } else if (obj instanceof Drawable) {
             view.setImageDrawable((Drawable) obj);
         } else if (obj instanceof String) {
-            ImageLoadUtil.display(mContext, (String) obj, view);
+            ImageLoadUtil.display(mActivity, (String) obj, view);
         }
     }
 
@@ -206,7 +381,7 @@ public class ControllerProxy implements ViewController {
     private void fillRecyclerViewData(RecyclerView recyclerView, Object obj) {
         if (obj instanceof RecyclerView.Adapter) {
             if (recyclerView.getLayoutManager() == null) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+                recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
             }
             recyclerView.setAdapter((RecyclerView.Adapter) obj);
         } else if (obj instanceof RecyclerView.LayoutManager) {
@@ -215,8 +390,8 @@ public class ControllerProxy implements ViewController {
     }
 
     private void fillRecyclerViewData(RecyclerView recyclerView, RecyclerUtil util) {
-        util.context(mContext);
-        if (recyclerView.getLayoutManager() == null && util.context(mContext).build() != null) {
+        util.context(mActivity);
+        if (recyclerView.getLayoutManager() == null && util.context(mActivity).build() != null) {
             recyclerView.setLayoutManager(util.build());
         }
         if (util.adapter() != null) {

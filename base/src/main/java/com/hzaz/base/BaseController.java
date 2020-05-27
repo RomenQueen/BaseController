@@ -26,6 +26,7 @@ import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
+import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.HttpParamUtil;
 import com.hzaz.base.net.RequestType;
@@ -911,11 +912,6 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
             return true;
         }
         return false;
-    }
-
-    public interface OnRefuseAndLoadListener {
-        void refuse(int page);//页码
-
     }
 
     @Override

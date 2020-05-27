@@ -6,7 +6,7 @@ import android.view.View;
 import com.hzaz.base.BaseController;
 
 
-public class ExampleController extends BaseController {
+public class GuideController extends BaseController {
     @Override
     public int getLayoutId() {
         return R.layout.activity_example;
@@ -25,7 +25,7 @@ public class ExampleController extends BaseController {
         if (v.getId() == R.id.btn_1) {
             open(Example1.class);
         } else if (v.getId() == R.id.btn_2) {
-            ExampleBaseActivity.start(this, Example1Impl.class);
+            ImplBaseActivity.start(this, Example1Impl.class);
         } else if (v.getId() == R.id.btn_3) {
             getContextActivity().startActivity(new Intent(getContextActivity(), ExampleActivity.class));
         }
