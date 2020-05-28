@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface OnRefuseAndLoad {
 
-    int viewId() default 0;
+    int viewId();
 
     boolean refuseAble() default true;
 

@@ -4,7 +4,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.hzaz.base.BASE;
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseController;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 

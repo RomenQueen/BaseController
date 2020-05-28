@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-import com.hzaz.base.BaseView;
+import com.hzaz.base.NetResponseViewImpl;
 import com.hzaz.base.R;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.ui.pop.CustomPopWindow;
@@ -268,7 +268,7 @@ public class PopWindowManager {
     }
 
     public static CustomPopWindow getBottomPopwindow(
-            BaseView view, @NonNull final OnPhotoFromSelectListener listener) {
+            NetResponseViewImpl view, @NonNull final OnPhotoFromSelectListener listener) {
         View contentView = LayoutInflater.from(view.getContextActivity()).inflate(R.layout.pop_photo, null);
         View root = view.getContextActivity().getWindow().getDecorView();
         //处理popWindow 显示内容
@@ -305,7 +305,7 @@ public class PopWindowManager {
         return popWindow;
     }
 
-    public static CustomPopWindow getPhotoWindow(BaseView view, @NonNull final OnPhotoFromSelectListener listener) {
+    public static CustomPopWindow getPhotoWindow(NetResponseViewImpl view, @NonNull final OnPhotoFromSelectListener listener) {
         View contentView = LayoutInflater.from(view.getContextActivity()).inflate(R.layout.pop_photo, null);
         final CustomPopWindow popWindow = new CustomPopWindow.PopupWindowBuilder(view.getContextActivity())
                 .setView(contentView)

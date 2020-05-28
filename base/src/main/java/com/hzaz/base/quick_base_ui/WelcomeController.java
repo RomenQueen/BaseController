@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.hzaz.base.BASE;
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseController;
 import com.hzaz.base.R;
 import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;

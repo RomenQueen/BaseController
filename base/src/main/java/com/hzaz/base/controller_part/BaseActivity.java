@@ -1,4 +1,4 @@
-package com.hzaz.base;
+package com.hzaz.base.controller_part;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -20,6 +20,9 @@ import android.view.ViewTreeObserver;
 import android.widget.ScrollView;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.hzaz.base.BASE;
+import com.hzaz.base.NetResponseViewImpl;
+import com.hzaz.base.R;
 import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.ToastUtil;
@@ -33,11 +36,11 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
-import static com.hzaz.base.BaseController.TAG_NAME;
-import static com.hzaz.base.BaseController.TAG_PASS;
+import static com.hzaz.base.controller_part.BaseController.TAG_NAME;
+import static com.hzaz.base.controller_part.BaseController.TAG_PASS;
 
 
-public class BaseActivity<P extends BaseController> extends RxFragmentActivity implements BaseView {
+public class BaseActivity<P extends BaseController> extends RxFragmentActivity implements NetResponseViewImpl {
 
     public static <P extends BaseController> void open(Context controller, Class<P> clazz, Object... pass) {
         if (controller != null) {

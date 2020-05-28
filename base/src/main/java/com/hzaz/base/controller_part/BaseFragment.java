@@ -1,4 +1,4 @@
-package com.hzaz.base;
+package com.hzaz.base.controller_part;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hzaz.base.NetResponseViewImpl;
+import com.hzaz.base.R;
 import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.net.BaseBean;
@@ -19,7 +21,7 @@ import com.trello.rxlifecycle2.components.support.RxFragment;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 
-public class BaseFragment<P extends BaseController> extends RxFragment implements BaseView {
+public class BaseFragment<P extends BaseController> extends RxFragment implements NetResponseViewImpl {
     protected P mPresenter;
     boolean isCreate = false;
     View fraRoot;

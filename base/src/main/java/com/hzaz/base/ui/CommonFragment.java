@@ -2,13 +2,13 @@ package com.hzaz.base.ui;
 
 import android.os.Bundle;
 
-import com.hzaz.base.BaseController;
-import com.hzaz.base.BaseFragment;
+import com.hzaz.base.controller_part.BaseController;
+import com.hzaz.base.controller_part.BaseFragment;
 import com.hzaz.base.common_util.LOG;
 
 import java.io.Serializable;
 
-import static com.hzaz.base.BaseController.TAG_NAME;
+import static com.hzaz.base.controller_part.BaseController.TAG_NAME;
 
 
 public class CommonFragment extends BaseFragment {

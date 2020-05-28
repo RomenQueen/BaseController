@@ -3,7 +3,7 @@ package com.rq.demo.ui;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseController;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
 import com.hzaz.base.ui.PopWindowManager;
 import com.rq.demo.R;

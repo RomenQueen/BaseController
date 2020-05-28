@@ -1,4 +1,4 @@
-package com.hzaz.base;
+package com.hzaz.base.controller_part;
 
 import android.text.TextUtils;
 import android.util.SparseArray;

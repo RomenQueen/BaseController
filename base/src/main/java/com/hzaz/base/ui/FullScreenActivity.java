@@ -1,7 +1,6 @@
 package com.hzaz.base.ui;
 
-import com.hzaz.base.BaseActivity;
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseActivity;
 
 
 public class FullScreenActivity extends BaseActivity {

@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hzaz.base.WelcomeActivity"
+            android:name="com.hzaz.base.controller_part.WelcomeActivity"
             android:theme="@style/ThemeWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +24,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ImplBaseActivity" />
-        <activity android:name=".ExampleActivity" />
+        <activity android:name=".CompareActivity" />
+        <activity android:name=".CompareNormalActivity" />
     </application>
 </manifest>

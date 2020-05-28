@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseController;
 
 import java.util.ArrayList;
 

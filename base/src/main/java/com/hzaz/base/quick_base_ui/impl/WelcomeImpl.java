@@ -1,6 +1,6 @@
 package com.hzaz.base.quick_base_ui.impl;
 
-import com.hzaz.base.BaseController;
+import com.hzaz.base.controller_part.BaseController;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.RequestType;
 

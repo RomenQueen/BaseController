@@ -31,6 +31,7 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="按钮2" />
+
     <TextView
         android:id="@+id/btn_3"
         android:layout_width="match_parent"
@@ -38,5 +39,20 @@
         android:gravity="center"
         android:padding="10dp"
         android:text="按钮3" />
+
+    <TextView
+        android:id="@+id/btn_4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="按钮4" />
+
+    <TextView
+        android:id="@+id/tv_result"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="20dp" />
 
 </LinearLayout>

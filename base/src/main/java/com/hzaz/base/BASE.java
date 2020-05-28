@@ -14,9 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BASE {
-    static boolean useCommonLayout;
-    static int commonLayoutId;
-    static int statusColorId;
+    public static boolean useCommonLayout;
+    public static int commonLayoutId;
+    public static int statusColorId;
     private static Context ctx;
     private static String mSessionId;
     private static int mNetErrorToast;

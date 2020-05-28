@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.hzaz.base.BASE;
-import com.hzaz.base.BaseView;
+import com.hzaz.base.NetResponseViewImpl;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 import com.hzaz.base.common_util.ToastUtil;
@@ -43,12 +43,12 @@ public class HttpParamUtil {
     }
 
 
-    public static <T extends Serializable> void post(final BaseView view, final String type, @NonNull Map<String, String> maps, Class<T> clazz, String... backToast) {
+    public static <T extends Serializable> void post(final NetResponseViewImpl view, final String type, @NonNull Map<String, String> maps, Class<T> clazz, String... backToast) {
         RequestType requestType = new RequestType(type, maps);
         dealCommonRequest(RetrofitUtils.getApiService(view.getContextActivity()).post(type, maps), view, requestType, clazz, backToast);
     }
 
-    public static <T extends Serializable> void uploadFile(final BaseView view, final String type, @NonNull Map<String, String> maps, String pathName, String path, Class<T> clazz, String... backToast) {
+    public static <T extends Serializable> void uploadFile(final NetResponseViewImpl view, final String type, @NonNull Map<String, String> maps, String pathName, String path, Class<T> clazz, String... backToast) {
         view.showLoading();
 //        LOG.e("HttpParamUtil", "uploadFile.path:" + path);
         RequestType requestType = new RequestType(type);
@@ -82,7 +82,7 @@ public class HttpParamUtil {
         dealCommonRequest(RetrofitUtils.getApiService(view.getContextActivity()).uploadFile(type, parts), view, requestType, clazz, backToast);
     }
 
-    public static <T extends Serializable> void init(final BaseView view, final String type, @NonNull Map<String, String> maps, Class<T> clazz, String... backToast) {
+    public static <T extends Serializable> void init(final NetResponseViewImpl view, final String type, @NonNull Map<String, String> maps, Class<T> clazz, String... backToast) {
         RequestType requestType = new RequestType(type, maps);
         dealCommonRequest(RetrofitUtils.getApiService(view.getContextActivity()).init(maps), view, requestType, clazz, backToast);
     }
@@ -96,7 +96,7 @@ public class HttpParamUtil {
         return map;
     }
 
-    public static <T extends Serializable> void get(final BaseView view, final String type, @NonNull Map<String, String> param, Class<T> clazz, String... backToast) {
+    public static <T extends Serializable> void get(final NetResponseViewImpl view, final String type, @NonNull Map<String, String> param, Class<T> clazz, String... backToast) {
         view.showLoading();
         RequestType requestType = new RequestType(type);
         dealCommonRequest(RetrofitUtils.getApiService(view.getContextActivity()).get(type, param, getParam()), view, requestType, clazz, backToast);
@@ -114,7 +114,7 @@ public class HttpParamUtil {
         return false;
     }
 
-    private static <T extends Serializable> void dealCommonRequest(Observable<ResponseBody> post, final BaseView view, final RequestType type, Class<T> clazz, String... backToast) {
+    private static <T extends Serializable> void dealCommonRequest(Observable<ResponseBody> post, final NetResponseViewImpl view, final RequestType type, Class<T> clazz, String... backToast) {
         LOG.e("HttpParamUtil", "dealCommonRequest.isNetworkConnected:"+isNetworkConnected(view.getContextActivity()));
         if (!isNetworkConnected(view.getContextActivity())) {
             type.setRespMsg("网络连接异常，请检查连接");
@@ -164,7 +164,7 @@ public class HttpParamUtil {
                 });
     }
 
-    public static void commonError(BaseView view, RequestType type) {
+    public static void commonError(NetResponseViewImpl view, RequestType type) {
         if (type.isNetError() && BASE.getNetErrorToast() > 0) {
             ToastUtil.show(view.getContextActivity(), BASE.getNetErrorToast());
             return;

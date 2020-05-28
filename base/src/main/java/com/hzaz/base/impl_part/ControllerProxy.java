@@ -1,7 +1,6 @@
-package com.hzaz.base;
+package com.hzaz.base.impl_part;
 
-import android.app.Activity;
-import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -21,14 +20,12 @@ import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.hzaz.base.BASE;
+import com.hzaz.base.R;
 import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
-import com.hzaz.base.impl_part.BaseControllerImpl;
-import com.hzaz.base.impl_part.OnClick;
-import com.hzaz.base.impl_part.OnRefuseAndLoad;
-import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
-import com.hzaz.base.impl_part.ViewController;
+import com.hzaz.base.impl_part.ActivityImpl.ViewParam;
 import com.rq.rvlibrary.BaseAdapter;
 import com.rq.rvlibrary.RecyclerUtil;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -41,50 +38,59 @@ import java.lang.reflect.Method;
 
 import static com.hzaz.base.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAndLoad;
 
-public class ControllerProxy implements ViewController {
-    BaseControllerImpl impl;
-    Activity mActivity;
-    Fragment mFragment;
-    View rootView;
+public class ControllerProxy {
+    //    Activity mActivity;
+//    Fragment mFragment;
+//    View rootView;
+    Context mContext;
+    ProxyObject proxyObject;
 
-    ControllerProxy(Activity con, Class impl) {
-        try {
-            this.impl = (BaseControllerImpl) impl.newInstance();
-            this.mActivity = con;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
+//    ControllerProxy(Activity con, Class impl) {
+//        try {
+//            this.impl = (BaseControllerImpl) impl.newInstance();
+//            this.mActivity = con;
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
+//    ControllerProxy(Fragment con, Class impl) {
+//        try {
+//            this.impl = (BaseControllerImpl) impl.newInstance();
+//            this.mActivity = con.getActivity();
+//            this.mFragment = con;
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        } catch (InstantiationException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    ControllerProxy(Context con, ProxyObject impl) {
+        this.mContext = con;
+        this.proxyObject = impl;
     }
 
-    ControllerProxy(Fragment con, Class impl) {
-        try {
-            this.impl = (BaseControllerImpl) impl.newInstance();
-            this.mActivity = con.getActivity();
-            this.mFragment = con;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public View getLayoutView() {
-        final LayoutInflater inflater = LayoutInflater.from(mActivity);
-        if (impl == null) {
+    public View getLayoutView(int layout) {
+        final LayoutInflater inflater = LayoutInflater.from(mContext);
+        if (mContext == null) {
             Log.e("ControllerProxy", "初始化异常，请阅读文档");
-            return new View(mActivity);
+            return new View(mContext);
         }
         View root;
-        if (impl.needOutScroll()) {//是否添加外部滑动控件，可自行适配小屏手机
-            if (BASE.commonLayoutId != 0) {
-                root = inflater.inflate(BASE.commonLayoutId, null);
-            } else {
-                root = inflater.inflate(R.layout.activity_base, null);
-            }
+        if (BASE.commonLayoutId != 0) {
+            root = inflater.inflate(BASE.commonLayoutId, null);
+        } else if (proxyObject.is(NoScroller.class)) {//是否添加外部滑动控件，可自行适配小屏手机
+            root = inflater.inflate(R.layout.activity_base_no_scroller, null);
             final ViewGroup container = root.findViewById(R.id.base_container);
-            final View content = inflater.inflate(impl.getLayoutId(), null);
+            final View content = inflater.inflate(layout, null);
+            container.addView(content);
+        } else {
+            root = inflater.inflate(R.layout.activity_base, null);
+            final ViewGroup container = root.findViewById(R.id.base_container);
+            final View content = inflater.inflate(layout, null);
             container.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
                 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
                 @Override
@@ -101,11 +107,6 @@ public class ControllerProxy implements ViewController {
                 }
             });
             container.addView(content);
-        } else {
-            root = inflater.inflate(R.layout.activity_base_no_scroller, null);
-            final ViewGroup container = root.findViewById(R.id.base_container);
-            final View content = inflater.inflate(impl.getLayoutId(), null);
-            container.addView(content);
         }
         if (root.findViewById(R.id.common_status_bar) != null) {
             ViewGroup.LayoutParams params = root.findViewById(R.id.common_status_bar).getLayoutParams();
@@ -113,16 +114,16 @@ public class ControllerProxy implements ViewController {
             params.width = ViewGroup.LayoutParams.MATCH_PARENT;
             root.findViewById(R.id.common_status_bar).setLayoutParams(params);
         }
-        rootView = root;
-        impl.setViewController(this);
         return root;
     }
 
     public void initView() {
-        if (impl instanceof View.OnClickListener) {
+        LOG.e("ControllerProxy", "start:initView");
+        if (proxyObject.is(View.OnClickListener.class)) {
+            LOG.e("ControllerProxy", "is:OnClickListener");
             Method method = null;
             try {
-                method = impl.getClass().getDeclaredMethod("onClick", View.class);
+                method = proxyObject.get(View.OnClickListener.class).getClass().getDeclaredMethod("onClick", View.class);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -135,17 +136,17 @@ public class ControllerProxy implements ViewController {
                         int[] value = inject.value();
                         if (value.length > 0) {
                             for (int id : value) {
-                                setData2View(id, impl);
+                                setData2View(id, proxyObject.get(View.OnClickListener.class));
                             }
                         }
                     }
                 }
             }
         }
-        if (impl instanceof OnRefuseAndLoadListener) {
+        if (proxyObject.is(OnRefuseAndLoadListener.class)) {
             Method method = null;
             try {
-                method = impl.getClass().getDeclaredMethod("refuse", int.class);
+                method = proxyObject.get(OnRefuseAndLoadListener.class).getClass().getDeclaredMethod("refuse", int.class);
             } catch (NoSuchMethodException e) {
                 e.printStackTrace();
             }
@@ -159,7 +160,7 @@ public class ControllerProxy implements ViewController {
                         if (id > 0) {
                             setOnRefuseAndLoadListener(
                                     id,
-                                    (OnRefuseAndLoadListener) impl
+                                    proxyObject.get(OnRefuseAndLoadListener.class)
                                     , inject.loadAble()
                                     , inject.refuseAble());
                         }
@@ -167,15 +168,19 @@ public class ControllerProxy implements ViewController {
                 }
             }
         }
-        impl.initView();
+        if (proxyObject.is(ActivityImpl.class)) {
+            proxyObject.get(ActivityImpl.class).onViewCreated();
+        }
+        LOG.e("ControllerProxy", "end:initView");
     }
 
     /**
      * RefreshAble LoadAble 默认 true
      * 推荐使用 @OnRefuseAndLoad
-     * @see OnRefuseAndLoad
+     *
      * @param refuseAndLoad boolean + boolean >>LoadAble + RefreshAble
      *                      null 根据 SmartRefreshLayout父布局 外层高度 与 SmartRefreshLayout 高度自行设置 LoadAble
+     * @see OnRefuseAndLoad
      */
     @Deprecated
     public void setOnRefuseAndLoadListener(int viewId, final OnRefuseAndLoadListener listener, Object... refuseAndLoad) {
@@ -218,27 +223,10 @@ public class ControllerProxy implements ViewController {
         }
     }
 
-    @Override
     public void setView2Data(int viewId, Object obj) {
         setData2View(viewId, obj);
     }
 
-    @Override
-    public void onResume() {
-        impl.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        impl.onPause();
-    }
-
-    @Override
-    public void onDestroy() {
-        impl.onDestroy();
-    }
-
-    @Override
     public void post(Runnable action, long time) {
         if (time <= 0) {
             mainHandler.post(action);
@@ -285,7 +273,7 @@ public class ControllerProxy implements ViewController {
     }
 
     public <T extends View> T getView(int viewId) {
-        return rootView.findViewById(viewId);
+        return proxyObject.get(ActivityImpl.class).getView(viewId);
     }
 
     private final void finalSetDataToView(View view, Object obj) {
@@ -293,7 +281,7 @@ public class ControllerProxy implements ViewController {
             LOG.utilLog("ViewEmpty");
             return;
         }
-        if (impl.fillCustomViewData(view, obj)) {
+        if (proxyObject.is(ViewSetter.class) && (proxyObject.get(ViewSetter.class)).fillCustomViewData(view, obj)) {
             return;
         }
         if (obj == null) {
@@ -308,7 +296,7 @@ public class ControllerProxy implements ViewController {
             view.setVisibility((int) obj);
             return;
         }
-        if (obj instanceof ViewParam) {
+        if (obj instanceof ActivityImpl.ViewParam) {
             if (obj == ViewParam.ENABLE) {
                 view.setEnabled(true);
             } else if (obj == ViewParam.UNABLE) {
@@ -354,7 +342,7 @@ public class ControllerProxy implements ViewController {
                 fillRecyclerViewData((RecyclerView) view, obj);
             }
         } else {
-            LOG.e(impl.getClass().getSimpleName(), "ControllerProxy can't find finalSetDataToView(" + view.getClass().getSimpleName() + ",Object),please Override Method fillCustomViewData and return true");
+            LOG.e(proxyObject.get(Object.class).getClass().getSimpleName(), "ControllerProxy can't find finalSetDataToView(" + view.getClass().getSimpleName() + ",Object),please Override Method fillCustomViewData and return true");
         }
     }
 
@@ -366,7 +354,7 @@ public class ControllerProxy implements ViewController {
         } else if (obj instanceof Drawable) {
             view.setImageDrawable((Drawable) obj);
         } else if (obj instanceof String) {
-            ImageLoadUtil.display(mActivity, (String) obj, view);
+            ImageLoadUtil.display(mContext, (String) obj, view);
         }
     }
 
@@ -381,7 +369,7 @@ public class ControllerProxy implements ViewController {
     private void fillRecyclerViewData(RecyclerView recyclerView, Object obj) {
         if (obj instanceof RecyclerView.Adapter) {
             if (recyclerView.getLayoutManager() == null) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+                recyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             }
             recyclerView.setAdapter((RecyclerView.Adapter) obj);
         } else if (obj instanceof RecyclerView.LayoutManager) {
@@ -390,8 +378,8 @@ public class ControllerProxy implements ViewController {
     }
 
     private void fillRecyclerViewData(RecyclerView recyclerView, RecyclerUtil util) {
-        util.context(mActivity);
-        if (recyclerView.getLayoutManager() == null && util.context(mActivity).build() != null) {
+        util.context(mContext);
+        if (recyclerView.getLayoutManager() == null && util.context(mContext).build() != null) {
             recyclerView.setLayoutManager(util.build());
         }
         if (util.adapter() != null) {
@@ -414,5 +402,4 @@ public class ControllerProxy implements ViewController {
             recyclerView.addItemDecoration(util.getDecoration());
         }
     }
-
 }

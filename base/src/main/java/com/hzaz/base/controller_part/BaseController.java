@@ -1,4 +1,4 @@
-package com.hzaz.base;
+package com.hzaz.base.controller_part;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -22,10 +22,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gyf.immersionbar.ImmersionBar;
+import com.hzaz.base.NetResponseViewImpl;
+import com.hzaz.base.R;
 import com.hzaz.base.common_util.AppUtil;
 import com.hzaz.base.common_util.LOG;
 import com.hzaz.base.common_util.SPUtil;
 import com.hzaz.base.common_util.image.ImageLoadUtil;
+import com.hzaz.base.impl_part.ActivityImpl;
+import com.hzaz.base.impl_part.ActivityImpl.ViewParam;
 import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
 import com.hzaz.base.net.BaseBean;
 import com.hzaz.base.net.HttpParamUtil;
@@ -43,13 +47,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
-import static com.hzaz.base.BaseActivity.TAG_OPEN_CODE;
+import static com.hzaz.base.controller_part.BaseActivity.TAG_OPEN_CODE;
+import static com.hzaz.base.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAndLoad;
 
 /**
  * 用  Controller 代替 Activity 和 Fragment 简化维护
  * 逻辑无关：与应用本身没有关系，任何应用可以复制的基类
  */
-public abstract class BaseController implements BaseView, View.OnClickListener {
+public abstract class BaseController implements NetResponseViewImpl, View.OnClickListener {
 
     public static final String TAG_PASS = "pass";
     public static final String TAG_NAME = "controller";
@@ -166,7 +171,7 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
      * 快速获取获取传递数据
      *
      * @see #finishOK(Serializable...)
-     * {@link com.hzaz.base.BaseActivity#getInnerIntent(BaseController, Class, Object...)}
+     * {@link BaseActivity#getInnerIntent(BaseController, Class, Object...)}
      * {@link com.hzaz.base.ui.CommonFragment#instance(Class, Serializable...)}
      */
     public Object getPass(int position, Intent... pass) {
@@ -725,6 +730,37 @@ public abstract class BaseController implements BaseView, View.OnClickListener {
         }
         if (obj instanceof Integer && ((int) obj == View.VISIBLE || (int) obj == View.GONE || (int) obj == View.INVISIBLE)) {
             view.setVisibility((int) obj);
+            return;
+        }
+        if (obj instanceof ViewParam) {
+            if (obj == ViewParam.ENABLE) {
+                view.setEnabled(true);
+            } else if (obj == ViewParam.UNABLE) {
+                view.setEnabled(false);
+            } else if (obj == ViewParam.CHECKABLE) {
+                view.setClickable(true);
+            } else if (obj == ViewParam.UNCHECKABLE) {
+                view.setClickable(false);
+            }
+            return;
+        }
+        if (obj instanceof OnRefuseAndLoadListener.Status && view instanceof SmartRefreshLayout) {
+            if (obj == FinishRefuseAndLoad) {
+                ((SmartRefreshLayout) view).finishLoadMore();
+                ((SmartRefreshLayout) view).finishRefresh();
+            } else if (obj == OnRefuseAndLoadListener.Status.FinishLoad) {
+                ((SmartRefreshLayout) view).finishLoadMore();
+            } else if (obj == OnRefuseAndLoadListener.Status.FinishRefuse) {
+                ((SmartRefreshLayout) view).finishRefresh();
+            } else if (obj == OnRefuseAndLoadListener.Status.loadAble_False) {
+                ((SmartRefreshLayout) view).setEnableLoadMore(false);
+            } else if (obj == OnRefuseAndLoadListener.Status.loadable_True) {
+                ((SmartRefreshLayout) view).setEnableLoadMore(true);
+            } else if (obj == OnRefuseAndLoadListener.Status.refreshable_False) {
+                ((SmartRefreshLayout) view).setEnableRefresh(false);
+            } else if (obj == OnRefuseAndLoadListener.Status.refreshable_True) {
+                ((SmartRefreshLayout) view).setEnableRefresh(true);
+            }
             return;
         }
         if (obj instanceof Boolean) {

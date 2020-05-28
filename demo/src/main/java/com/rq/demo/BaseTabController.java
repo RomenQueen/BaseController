@@ -5,8 +5,8 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.hzaz.base.BaseController;
-import com.hzaz.base.BaseFragment;
+import com.hzaz.base.controller_part.BaseController;
+import com.hzaz.base.controller_part.BaseFragment;
 import com.hzaz.base.R;
 import com.hzaz.base.common_util.ToastUtil;
 import com.hzaz.base.ui.FragmentSaveTabHost;

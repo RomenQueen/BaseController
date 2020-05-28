@@ -21,10 +21,10 @@
         <activity
             android:name=".ui.FullScreenActivity"
             android:theme="@style/FullScreen" />
-        <activity android:name=".WebActivity" />
+        <activity android:name=".controller_part.WebActivity" />
 
         <activity
-            android:name=".BaseActivity"
+            android:name=".controller_part.BaseActivity"
             android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
     </application>
 

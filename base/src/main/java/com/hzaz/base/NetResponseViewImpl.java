@@ -9,7 +9,7 @@ import com.trello.rxlifecycle2.LifecycleTransformer;
 
 import java.io.Serializable;
 
-public interface BaseView {//统一网络回调
+public interface NetResponseViewImpl {//统一网络回调
 
     void handleFailResponse(BaseBean baseBean);  //统一处理响应失败
 

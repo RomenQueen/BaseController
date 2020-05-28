@@ -1,4 +1,4 @@
-package com.hzaz.base;
+package com.hzaz.base.controller_part;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.hzaz.base.R;
 import com.hzaz.base.common_util.LOG;
 
 /**
