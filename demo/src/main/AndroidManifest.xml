@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.hzaz.base.controller_part.WelcomeActivity"
+            android:name=".CompareStartActivity"
             android:theme="@style/ThemeWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

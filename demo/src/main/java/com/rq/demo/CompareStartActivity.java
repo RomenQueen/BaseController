@@ -1,23 +1,26 @@
 package com.rq.demo;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
+import android.widget.TextView;
 
-import com.hzaz.base.controller_part.BaseController;
+import com.hzaz.base.controller_part.BaseActivity;
 
-
-public class GuideController extends BaseController {
-    @Override
-    public int getLayoutId() {
-        return R.layout.activity_example;
-    }
+public class CompareStartActivity extends Activity implements View.OnClickListener {
 
     @Override
-    public void onViewCreated() {
-        super.onViewCreated();
-        setData2View(R.id.show, System.currentTimeMillis() + " -> " + this.getClass().getSimpleName());
-        setOnClickListener(R.id.btn_1, R.id.btn_2, R.id.btn_3, R.id.btn_4);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_example);
+        findViewById(R.id.btn_1).setOnClickListener(this);
+        findViewById(R.id.btn_2).setOnClickListener(this);
+        findViewById(R.id.btn_3).setOnClickListener(this);
+        findViewById(R.id.btn_4).setOnClickListener(this);
     }
+
 
     int time = 0;
     int clickId = 0;
@@ -28,16 +31,16 @@ public class GuideController extends BaseController {
     String name;
 
     @Override
-    protected void onHttpGet() {
-        super.onHttpGet();
-        if (time > 0 && time < 1_000) {
+    protected void onResume() {
+        super.onResume();
+        if (time > 0 && time <= 1000) {
             if (time == 1) {
                 startTime = System.currentTimeMillis();
                 max = getCurrentMemoryInfo();
                 startMemory = getCurrentMemoryInfo();
-                showRes = getAllMemoryInfo() + "\n" + "getCurrentMemoryInfo = " + max + " M\n";
+                showRes = getAllMemoryInfo() + "\n" + "getCurrentMemoryInfo = " + startMemory + " M\n";
             }
-            if (time == 999) {
+            if (time == 1000) {
                 showRes += ("最后一次打开--> " + System.currentTimeMillis() + "\n 最后信息：" + getAllMemoryInfo() + "\n\n" + name + "\n 一千次耗时:" + (System.currentTimeMillis() - startTime)
                         + "\n\nmax = " + max + "\n\n增加：" + (getCurrentMemoryInfo() - startMemory));
                 setData2View(R.id.tv_result, showRes);
@@ -50,6 +53,14 @@ public class GuideController extends BaseController {
             time++;
             skip(getView(clickId));
         }
+    }
+
+    private void setData2View(int tv_result, String showRes) {
+        ((TextView) findViewById(tv_result)).setText(showRes);
+    }
+
+    private View getView(int clickId) {
+        return findViewById(clickId);
     }
 
     private String getAllMemoryInfo() {
@@ -66,13 +77,13 @@ public class GuideController extends BaseController {
     private float getCurrentMemoryInfo() {
         //当前分配的总内存
         float totalMemory = (float) (Runtime.getRuntime().totalMemory() * 1.0 / (1024 * 1024));
-        return totalMemory;
+        float freeMemory = (float) (Runtime.getRuntime().freeMemory() * 1.0 / (1024 * 1024));
+        return totalMemory - freeMemory;
     }
 
 
     @Override
     public void onClick(View v) {
-        super.onClick(v);
         clickId = v.getId();
         time = 1;
         skip(v);
@@ -81,14 +92,15 @@ public class GuideController extends BaseController {
     private void skip(View v) {
         if (v.getId() == R.id.btn_1) {
             name = "按钮一";
-            open(CompareController.class);
+            BaseActivity.open(this, CompareController.class);
         } else if (v.getId() == R.id.btn_2) {
         } else if (v.getId() == R.id.btn_3) {
             name = "按钮3";
-            getContextActivity().startActivity(new Intent(getContextActivity(), CompareActivity.class));
+            startActivity(new Intent(this, CompareActivity.class));
         } else if (v.getId() == R.id.btn_4) {
             name = "按钮4";
-            getContextActivity().startActivity(new Intent(getContextActivity(), CompareNormalActivity.class));
+            startActivity(new Intent(this, CompareNormalActivity.class));
         }
     }
+
 }
