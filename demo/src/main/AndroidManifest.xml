@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".CompareStartActivity"
+            android:name="com.rq.ctr.controller_part.WelcomeActivity"
             android:theme="@style/ThemeWelcome">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,5 +26,7 @@
         <activity android:name=".ImplBaseActivity" />
         <activity android:name=".CompareActivity" />
         <activity android:name=".CompareNormalActivity" />
+
+        <service android:name="com.rq.ctr.net.DownloadIntentService" />
     </application>
 </manifest>

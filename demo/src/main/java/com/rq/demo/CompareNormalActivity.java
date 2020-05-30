@@ -6,12 +6,12 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 
-import com.hzaz.base.impl_part.ActivityImpl;
-import com.hzaz.base.impl_part.BCImplBinder;
-import com.hzaz.base.impl_part.ControllerProxy;
-import com.hzaz.base.impl_part.OnClick;
-import com.hzaz.base.impl_part.OnRefuseAndLoad;
-import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
+import com.rq.ctr.impl_part.ActivityImpl;
+import com.rq.ctr.impl_part.BCImplBinder;
+import com.rq.ctr.impl_part.ControllerProxy;
+import com.rq.ctr.impl_part.OnClick;
+import com.rq.ctr.impl_part.OnRefuseAndLoad;
+import com.rq.ctr.impl_part.OnRefuseAndLoadListener;
 
 public class CompareNormalActivity extends Activity implements ActivityImpl, View.OnClickListener, OnRefuseAndLoadListener {
 
@@ -35,11 +35,6 @@ public class CompareNormalActivity extends Activity implements ActivityImpl, Vie
         super.onResume();
         Log.e("CompareNormalActivity", "onResume:36");
         finish();
-    }
-
-    @Override
-    public <T extends View> T getView(int viewId) {
-        return findViewById(viewId);
     }
 
     @Override

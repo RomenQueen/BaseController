@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
 
-import com.hzaz.base.controller_part.BaseActivity;
+import com.rq.ctr.controller_part.BaseActivity;
 
 public class CompareStartActivity extends Activity implements View.OnClickListener {
 
@@ -41,8 +41,11 @@ public class CompareStartActivity extends Activity implements View.OnClickListen
                 showRes = getAllMemoryInfo() + "\n" + "getCurrentMemoryInfo = " + startMemory + " M\n";
             }
             if (time == 1000) {
-                showRes += ("最后一次打开--> " + System.currentTimeMillis() + "\n 最后信息：" + getAllMemoryInfo() + "\n\n" + name + "\n 一千次耗时:" + (System.currentTimeMillis() - startTime)
-                        + "\n\nmax = " + max + "\n\n增加：" + (getCurrentMemoryInfo() - startMemory));
+                showRes += ("最后一次打开--> " + System.currentTimeMillis() +
+                        "\n 最后信息：" + getAllMemoryInfo() +
+                        "\n\n" + name +
+                        "\n 一千次耗时:" + (System.currentTimeMillis() - startTime)
+                        + "\n始/终/Max  --> "+startMemory+"/"+getCurrentMemoryInfo()+"/"+max+" MB");
                 setData2View(R.id.tv_result, showRes);
                 startTime = 0;
                 max = 0;
@@ -91,7 +94,7 @@ public class CompareStartActivity extends Activity implements View.OnClickListen
 
     private void skip(View v) {
         if (v.getId() == R.id.btn_1) {
-            name = "按钮一";
+            name = "按钮1";
             BaseActivity.open(this, CompareController.class);
         } else if (v.getId() == R.id.btn_2) {
         } else if (v.getId() == R.id.btn_3) {

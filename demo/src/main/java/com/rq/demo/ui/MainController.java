@@ -3,10 +3,12 @@ package com.rq.demo.ui;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.hzaz.base.controller_part.BaseController;
-import com.hzaz.base.common_util.image.ImageLoadUtil;
-import com.hzaz.base.ui.PopWindowManager;
+import com.rq.ctr.common_util.ToastUtil;
+import com.rq.ctr.common_util.image.ImageLoadUtil;
+import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.ui.PopWindowManager;
 import com.rq.demo.R;
+import com.rq.demo.bean.WeatherBean;
 import com.rq.demo.contact.EaseContactList;
 import com.rq.demo.contact.EaseUser;
 import com.rq.demo.contact.PingYingUtil;
@@ -20,9 +22,13 @@ public class MainController extends BaseController {
         return R.layout.activity_main;
     }
 
+    WeatherBean passBean;
+
     @Override
     public void onViewCreated() {
         super.onViewCreated();
+        passBean = (WeatherBean) getPass(0);
+        ToastUtil.show(passBean.getData().getForecast().get(0).toToast());
         EaseContactList list = getView(R.id.show);
         setOnClickListener(R.id.click);
         List<EaseUser> contactList = new ArrayList<>();
@@ -48,7 +54,7 @@ public class MainController extends BaseController {
         contactList.add(new DebugUser("孙琦.05"));
         list.init(contactList);
         list.autoSort(true);
-        ImageLoadUtil.display(getContextActivity(), "", 0, new ImageView(getContextActivity()), 0, 0, 0,6);
+        ImageLoadUtil.display(getContextActivity(), "", 0, new ImageView(getContextActivity()), 0, 0, 0, 6);
     }
 
     String url = "https://img2.3lian.com/2014/f6/173/d/51.jpg";

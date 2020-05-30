@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/main_tab_height" />
 
-    <com.hzaz.base.ui.FragmentSaveTabHost
+    <com.rq.ctr.ui.FragmentSaveTabHost
         android:id="@android:id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="@dimen/main_tab_height"
@@ -23,7 +23,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0" />
 
-    </com.hzaz.base.ui.FragmentSaveTabHost>
+    </com.rq.ctr.ui.FragmentSaveTabHost>
 
     <View
         style="@style/HorizontalLine"

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.hzaz.base.impl_part.BCImplBinder;
-import com.hzaz.base.impl_part.ControllerProxy;
+import com.rq.ctr.impl_part.BCImplBinder;
+import com.rq.ctr.impl_part.ControllerProxy;
 
 public class ImplBaseActivity extends Activity {
 

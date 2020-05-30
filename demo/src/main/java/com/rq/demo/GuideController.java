@@ -3,7 +3,7 @@ package com.rq.demo;
 import android.content.Intent;
 import android.view.View;
 
-import com.hzaz.base.controller_part.BaseController;
+import com.rq.ctr.controller_part.BaseController;
 
 
 public class GuideController extends BaseController {

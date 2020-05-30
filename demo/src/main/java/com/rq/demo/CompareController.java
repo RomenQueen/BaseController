@@ -2,8 +2,8 @@ package com.rq.demo;
 
 import android.view.View;
 
-import com.hzaz.base.controller_part.BaseController;
-import com.hzaz.base.impl_part.OnRefuseAndLoadListener;
+import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.impl_part.OnRefuseAndLoadListener;
 
 public class CompareController extends BaseController implements OnRefuseAndLoadListener {
     @Override

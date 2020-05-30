@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
-import com.hzaz.base.common_util.LOG;
+import com.rq.ctr.common_util.LOG;
 import com.rq.demo.R;
 
 import java.util.ArrayList;

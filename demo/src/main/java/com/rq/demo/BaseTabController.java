@@ -5,11 +5,11 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.hzaz.base.controller_part.BaseController;
-import com.hzaz.base.controller_part.BaseFragment;
-import com.hzaz.base.R;
-import com.hzaz.base.common_util.ToastUtil;
-import com.hzaz.base.ui.FragmentSaveTabHost;
+import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.controller_part.BaseFragment;
+import com.rq.ctr.R;
+import com.rq.ctr.common_util.ToastUtil;
+import com.rq.ctr.ui.FragmentSaveTabHost;
 
 public abstract class BaseTabController extends BaseController implements TabHost.OnTabChangeListener, View.OnClickListener, FragmentSaveTabHost.OnChangeInterceptor {
 

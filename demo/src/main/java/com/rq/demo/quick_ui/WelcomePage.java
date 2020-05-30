@@ -1,12 +1,18 @@
 package com.rq.demo.quick_ui;
 
-import com.hzaz.base.controller_part.BaseController;
-import com.hzaz.base.common_util.LOG;
-import com.hzaz.base.net.BaseBean;
-import com.hzaz.base.net.RequestType;
-import com.hzaz.base.quick_base_ui.impl.WelcomeImpl;
-import com.hzaz.base.ui.CodeHelper;
+import com.rq.ctr.common_util.LOG;
+import com.rq.ctr.common_util.ToastUtil;
+import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.net.BaseBean;
+import com.rq.ctr.net.RequestType;
+import com.rq.ctr.quick_base_ui.impl.WelcomeImpl;
+import com.rq.ctr.ui.CodeHelper;
 import com.rq.demo.R;
+import com.rq.demo.bean.WeatherBean;
+import com.rq.demo.net.HttpManager;
+import com.rq.demo.ui.MainController;
+
+import static com.rq.demo.net.Constants.TransCode.code_1;
 
 
 public class WelcomePage implements WelcomeImpl {
@@ -17,9 +23,11 @@ public class WelcomePage implements WelcomeImpl {
     }
 
     CodeHelper codeHelper;
+    BaseController controller;
 
     @Override
     public void init(final BaseController view) {
+        this.controller = view;
         LOG.e("WelcomePage", "LINE:19");
         view.setData2View(R.id.text, "这只是一个开屏页，正常项目都会用到，所以单独提取到Base" +
                 "基类中，实际应用 ：\n" +
@@ -40,34 +48,9 @@ public class WelcomePage implements WelcomeImpl {
         });
         codeHelper.setRunTime(4);
         codeHelper.start();
-//        HttpManager.refuse(view);
-//        HttpManager.getTopNames(view);
-//        ResourceStreamLoader resourceLoader = new ResourceStreamLoader(view.getContextActivity(), R.mipmap.logo_gif1);
-//        final APNGDrawable apngDrawable = new APNGDrawable(resourceLoader);
-//        view.setData2View(R.id.img, apngDrawable);
-//        apngDrawable.registerAnimationCallback(new Animatable2Compat.AnimationCallback() {
-//            @Override
-//            public void onAnimationStart(Drawable drawable) {
-//                super.onAnimationStart(drawable);
-//                new Thread(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        try {
-//                            Thread.sleep(2600);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                        view.runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                apngDrawable.pause();
-//                            }
-//                        });
-//                    }
-//                }).start();
-//            }
-//        });
+        HttpManager.getWeather(view);
     }
+
 
     @Override
     public String getUpdatePath() {
@@ -76,7 +59,7 @@ public class WelcomePage implements WelcomeImpl {
 
     @Override
     public long getAutoSkipTime() {
-        return 2000;
+        return -1;
     }
 
     @Override
@@ -101,20 +84,20 @@ public class WelcomePage implements WelcomeImpl {
 
     @Override
     public boolean is(RequestType type, BaseBean data) {
-//        if (type.is("ColumnMenuListV1")) {
-//            List<TopNameBean.ColumnMenuListBean> list = data.getList(TopNameBean.ColumnMenuListBean.class, "ColumnMenuList");
-//            LOG.bean("WelcomePage", list);
-//            for (int i = 0; i < list.size(); i++) {
-//                LOG.e("WelcomePage", i + ".is:" + list.get(i).toString());
-//            }
-//            return false;
-//        } else if (type.is(VersionV1_1)) {
-//            this.uploadPath = data.get(String.class, "vMap", "updatePath");
-//            this.Vname = "hc-v" + data.get(String.class, "vMap", "vname");
-//            this.VersionDescribe = data.get(String.class, "vMap", "vdescribe");
-//            this.UpdateFlag = 9 == (int) data.get(Integer.class, "vMap", "updateFlag");
-//            return true;
-//        }
+        if (type.is(code_1)) {
+            final WeatherBean bean = (WeatherBean) data;
+            if (bean == null) {
+                ToastUtil.show("接口异常");
+                return false;
+            }
+            controller.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    controller.skip(MainController.class, bean);
+                }
+            }, 1000);
+        }
+
         return false;
     }
 

@@ -2,7 +2,7 @@ package com.rq.demo.ui;
 
 import android.view.View;
 
-import com.hzaz.base.controller_part.BaseController;
+import com.rq.ctr.controller_part.BaseController;
 import com.rq.demo.R;
 
 import static com.rq.demo.ui.DataPassExampleCon.REQUEST_CODE;
