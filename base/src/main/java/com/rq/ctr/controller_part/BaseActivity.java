@@ -236,28 +236,6 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        boolean hasAllGet = false;
-        for (int i = 0; i < permissions.length; i++) {
-            hasAllGet = ActivityCompat.checkSelfPermission(this, permissions[i]) == PackageManager.PERMISSION_GRANTED;
-            if (!hasAllGet) break;
-        }
-        if (requestCode == TAG_PERMISSION_GTE) {
-            if (hasAllGet) {
-                if (mPresenter != null) {
-                    mPresenter.onViewCreated();
-                    mPresenter.findView();
-                }
-            }
-        } else {
-            if (mPresenter != null) {
-                mPresenter.onClickPermissionResult(requestCode, hasAllGet);
-            }
-        }
-    }
-
     public static final int TAG_PERMISSION_GTE = 102;
 
 //    int x1;
@@ -308,10 +286,10 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
     protected void onResume() {
         super.onResume();
         if (mPresenter != null) {
-            mPresenter.onResume();
+            mPresenter.onControllerResume();
             mPresenter.onActivityResume();
             ControllerWatcher.get().addActivityController(mPresenter);
-            LOG.i("BaseActivity", mPresenter.getClass().getSimpleName() + " LINE:onHttpGet");
+            LOG.i("BaseActivity", mPresenter.getClass().getSimpleName() + " LINE:onResume");
         }
         LOG.i("BaseActivity", "isFirstOnResume = " + isFirstOnResume);
         if (isFirstOnResume) {
@@ -326,9 +304,9 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
     protected void onPause() {
         super.onPause();
         if (mPresenter != null) {
-            LOG.i("BaseActivity", mPresenter.getClass().getSimpleName() + " LINE:onPause");
+            LOG.i("BaseActivity", mPresenter.getClass().getSimpleName() + " LINE:onControllerPause");
 //            ControllerWatcher.get().removerActivityController(mPresenter);
-            mPresenter.onPause();
+            mPresenter.onControllerPause();
             mPresenter.onActivityPause();
             ControllerWatcher.get().removerActivityController(mPresenter);
         }

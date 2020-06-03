@@ -6,6 +6,7 @@ import android.view.View;
 
 import com.rq.ctr.controller_part.BaseController;
 import com.rq.ctr.common_util.LOG;
+import com.rq.ctr.impl_part.OnClick;
 import com.rq.demo.R;
 
 /**
@@ -21,13 +22,7 @@ public class DataPassExampleCon extends BaseController {
         return R.layout.activity_pass1;
     }
 
-    @Override
-    public void onViewCreated() {
-        super.onViewCreated();
-        setOnClickListener(R.id.click1, R.id.click2);
-    }
-
-    @Override
+    @OnClick({R.id.click1, R.id.click2})
     public void onClick(View v) {
         if (v.getId() == R.id.click1) {
             openFor(DataPassExampleCon2.class);

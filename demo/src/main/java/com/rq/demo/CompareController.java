@@ -3,25 +3,19 @@ package com.rq.demo;
 import android.view.View;
 
 import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.impl_part.OnClick;
+import com.rq.ctr.impl_part.OnRefuseAndLoad;
 import com.rq.ctr.impl_part.OnRefuseAndLoadListener;
 
-public class CompareController extends BaseController implements OnRefuseAndLoadListener {
+public class CompareController extends BaseController implements OnRefuseAndLoadListener, View.OnClickListener {
     @Override
     public int getLayoutId() {
         return R.layout.activity_ex_diff;
     }
 
-    @Override
-    public void onViewCreated() {
-        super.onViewCreated();
-        setOnClickListener(R.id.tv_show1, R.id.tv_show2, R.id.tv_show3, R.id.tv_show4);
-        setOnRefuseAndLoadListener(R.id.refuse_layout, this);
-    }
 
-
-    @Override
+    @OnClick({R.id.tv_show1, R.id.tv_show2, R.id.tv_show3, R.id.tv_show4})
     public void onClick(View v) {
-        super.onClick(v);
         if (v.getId() == R.id.tv_show1) {
             setData2View(R.id.tv_show1, "CompareController-->填充1：" + System.currentTimeMillis());
         } else if (v.getId() == R.id.tv_show2) {
@@ -34,12 +28,12 @@ public class CompareController extends BaseController implements OnRefuseAndLoad
     }
 
     @Override
-    public void onActivityResume() {
-        super.onActivityResume();
+    protected void onResume() {
+        super.onResume();
         finish();
     }
 
-    @Override
+    @OnRefuseAndLoad(viewId = R.id.refuse_layout)
     public void refuse(final int page) {
         runOnUiThread(new Runnable() {
             @Override

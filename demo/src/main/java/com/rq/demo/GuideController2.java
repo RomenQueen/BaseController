@@ -7,7 +7,7 @@ import com.rq.ctr.controller_part.BaseController;
 import com.rq.ctr.impl_part.OnClick;
 
 
-public class GuideController extends BaseController implements View.OnClickListener {
+public class GuideController2 extends BaseController {
     @Override
     public int getLayoutId() {
         return R.layout.activity_example;
@@ -30,7 +30,6 @@ public class GuideController extends BaseController implements View.OnClickListe
     @Override
     protected void onResume() {
         super.onResume();
-        super.onViewCreated();
         if (time > 0 && time < 1_000) {
             if (time == 1) {
                 startTime = System.currentTimeMillis();

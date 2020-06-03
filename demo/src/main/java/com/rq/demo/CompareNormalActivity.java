@@ -23,18 +23,14 @@ public class CompareNormalActivity extends Activity implements ActivityImpl, Vie
         proxy = BCImplBinder.bind(this, this);
         setContentView(proxy.getLayoutView(R.layout.activity_ex_diff));
         proxy.initView();
+        proxy.startActivity(CompareActivity.class);
+        Integer i = proxy.getPass(0);
+        Log.e("CompareNormalActivity", "onCreate:i = " + i);
     }
 
     @Override
     public void onViewCreated() {
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.e("CompareNormalActivity", "onResume:36");
-        finish();
     }
 
     @Override

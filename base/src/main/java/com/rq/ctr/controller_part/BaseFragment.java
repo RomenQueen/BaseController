@@ -30,7 +30,6 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPresenter = getController(this, 0);
-        LOG.e("BaseFragment", "onCreate.28:" + mPresenter);
         if (mPresenter != null) {
             mPresenter.setFragment(this);
         }
@@ -95,7 +94,7 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
     protected void onHideToUser() {
         if (mPresenter != null) {
             ControllerWatcher.get().removerFragmentController(mPresenter);
-            mPresenter.onPause();
+            mPresenter.onControllerPause();
         }
     }
 
@@ -105,7 +104,7 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
         if (mPresenter.attach() == null) {
             ControllerWatcher.get().addFragmentController(mPresenter);
         }
-        mPresenter.onResume();
+        mPresenter.onControllerResume();
     }
 
     @Override

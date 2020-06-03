@@ -8,9 +8,9 @@ import com.rq.ctr.net.RequestType;
 import com.rq.ctr.quick_base_ui.impl.WelcomeImpl;
 import com.rq.ctr.ui.CodeHelper;
 import com.rq.demo.R;
+import com.rq.demo.TabController;
 import com.rq.demo.bean.WeatherBean;
 import com.rq.demo.net.HttpManager;
-import com.rq.demo.ui.MainController;
 
 import static com.rq.demo.net.Constants.TransCode.code_1;
 
@@ -93,7 +93,7 @@ public class WelcomePage implements WelcomeImpl {
             controller.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    controller.skip(MainController.class, bean);
+                    controller.skip(TabController.class, bean);
                 }
             }, 1000);
         }
@@ -103,7 +103,7 @@ public class WelcomePage implements WelcomeImpl {
 
     @Override
     public void skip(BaseController view) {
-        view.skip(MainController.class);
+        view.skip(TabController.class);
     }
 
 }

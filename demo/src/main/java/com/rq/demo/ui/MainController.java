@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.rq.ctr.common_util.ToastUtil;
 import com.rq.ctr.common_util.image.ImageLoadUtil;
 import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.impl_part.OnClick;
 import com.rq.ctr.ui.PopWindowManager;
 import com.rq.demo.R;
 import com.rq.demo.bean.WeatherBean;
@@ -30,7 +31,6 @@ public class MainController extends BaseController {
         passBean = (WeatherBean) getPass(0);
         ToastUtil.show(passBean.getData().getForecast().get(0).toToast());
         EaseContactList list = getView(R.id.show);
-        setOnClickListener(R.id.click);
         List<EaseUser> contactList = new ArrayList<>();
         contactList.add(new DebugUser("点击跳转数据传递"));
         contactList.add(new DebugUser("李四"));
@@ -59,9 +59,8 @@ public class MainController extends BaseController {
 
     String url = "https://img2.3lian.com/2014/f6/173/d/51.jpg";
 
-    @Override
+    @OnClick(R.id.click)
     public void onClick(View v) {
-        super.onClick(v);
         PopWindowManager.showImage(getActivity(), url);
 //        open(DataPassExampleCon.class);
     }

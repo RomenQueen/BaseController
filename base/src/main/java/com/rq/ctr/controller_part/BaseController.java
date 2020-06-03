@@ -10,7 +10,6 @@ import android.os.Looper;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -29,6 +28,8 @@ import com.rq.ctr.common_util.LOG;
 import com.rq.ctr.common_util.SPUtil;
 import com.rq.ctr.common_util.image.ImageLoadUtil;
 import com.rq.ctr.impl_part.ActivityImpl.ViewParam;
+import com.rq.ctr.impl_part.OnClick;
+import com.rq.ctr.impl_part.OnRefuseAndLoad;
 import com.rq.ctr.impl_part.OnRefuseAndLoadListener;
 import com.rq.ctr.net.BaseBean;
 import com.rq.ctr.net.HttpParamUtil;
@@ -42,10 +43,11 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.nfc.tech.MifareUltralight.PAGE_SIZE;
 import static com.rq.ctr.controller_part.BaseActivity.TAG_OPEN_CODE;
 import static com.rq.ctr.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAndLoad;
 
@@ -53,7 +55,7 @@ import static com.rq.ctr.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAn
  * 用  Controller 代替 Activity 和 Fragment 简化维护
  * 逻辑无关：与应用本身没有关系，任何应用可以复制的基类
  */
-public abstract class BaseController implements NetResponseViewImpl, View.OnClickListener {
+public abstract class BaseController implements NetResponseViewImpl {
 
     public static final String TAG_PASS = "pass";
     public static final String TAG_NAME = "controller";
@@ -291,7 +293,64 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
      * then won't attach this medth
      */
     public void onViewCreated() {
+        if (is(View.OnClickListener.class)) {
+            Method method = null;
+            try {
+                method = get(View.OnClickListener.class).getClass().getDeclaredMethod("onClick", View.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            if (method == null) return;
+            Annotation[] annotations = method.getAnnotations();
+            if (annotations.length > 0) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof OnClick) {
+                        OnClick inject = (OnClick) annotation;
+                        int[] value = inject.value();
+                        if (value.length > 0) {
+                            for (int id : value) {
+                                setData2View(id, get(View.OnClickListener.class));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (is(OnRefuseAndLoadListener.class)) {
+            Method method = null;
+            try {
+                method = get(OnRefuseAndLoadListener.class).getClass().getDeclaredMethod("refuse", int.class);
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            }
+            if (method == null) return;
+            Annotation[] annotations = method.getAnnotations();
+            if (annotations.length > 0) {
+                for (Annotation annotation : annotations) {
+                    if (annotation instanceof OnRefuseAndLoad) {
+                        OnRefuseAndLoad inject = (OnRefuseAndLoad) annotation;
+                        int id = inject.viewId();
+                        if (id > 0) {
+                            setOnRefuseAndLoadListener(
+                                    id,
+                                    get(OnRefuseAndLoadListener.class)
+                                    , inject.loadAble()
+                                    , inject.refuseAble());
+                        }
+                    }
+                }
+            }
+        }
         ImmersionBar.with(getActivity()).init();
+    }
+
+    protected final boolean is(Class<?> clazz) {
+        boolean res = clazz.isAssignableFrom(this.getClass());
+        return res;
+    }
+
+    public <T> T get(Class<T> type) {
+        return type.cast(this);
     }
 
     public final void runOnUiThread(Runnable action) {
@@ -406,10 +465,6 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
         return false;
     }
 
-    public boolean fragmentImmersionEnable() {
-        return false;
-    }
-
     public void setOnClickListener(View.OnClickListener listener, int... ids) {
         if (ids == null || ids.length == 0 || listener == null) return;
         for (int id : ids) {
@@ -419,73 +474,8 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
         }
     }
 
-    int permissionRequestId = 0;
-    View.OnClickListener permissionCheck = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (permissionHelper.get(v.getId()) != null) {
-                PermissionWatcher watcher = permissionHelper.get(v.getId());
-                BaseController.this.permissionRequestId = v.getId();
-                ActivityCompat.requestPermissions(mActivity, watcher.pes, 666);
-            } else {
-                BaseController.this.onClick(v);
-            }
-        }
-    };
-
-    public void onClickPermissionResult(int requestCode__ViewId, boolean hasAllGet) {
-        if (requestCode__ViewId == 666) {
-            if (hasAllGet) {
-                onClick(getView(permissionRequestId));
-            } else {
-                permissionHelper.get(permissionRequestId)
-                        .mGetter.onShowFail();
-            }
-        }
-    }
-
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return false;
-    }
-
-    public interface PermissionGetter {
-
-        void onShowFail();
-    }
-
-    class PermissionWatcher {
-        String[] pes;
-        PermissionGetter mGetter;
-
-        public PermissionWatcher(String[] pes, PermissionGetter getter) {
-            this.pes = pes;
-            this.mGetter = getter;
-        }
-
-    }
-
-    SparseArray<PermissionWatcher> permissionHelper = new SparseArray();
-
-    /**
-     * 点击前 动态权限 检查
-     *
-     * @param id     点击按钮
-     * @param getter 错误回调
-     * @see #needPermissions()
-     */
-
-    protected void bindPermissionToView(int id, String[] pes, PermissionGetter getter) {
-//        todo 手写动态获取尝试
-//        permissionHelper.append(id, new PermissionWatcher(pes, getter));
-    }
-
-    public void setOnClickListener(int... ids) {
-        if (ids == null || ids.length == 0) return;
-        for (int id : ids) {
-            if (getView(id) != null) {
-                getView(id).setOnClickListener(permissionCheck);
-            }
-        }
     }
 
     public String getInput(int viewId) {
@@ -498,23 +488,6 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
                 return "";
             }
         }
-    }
-
-    protected boolean listenerCanLoadMore(List data) {
-        if (refuseViewId == 0) {
-            LOG.e("BaseController", "检查代码，未设置 SmartRefreshLayout 加载 监听（setOnRefuseAndLoadListener）");
-            return false;
-        }
-        final SmartRefreshLayout refreshLayout = getView(refuseViewId);
-        if (refreshLayout == null) {
-            LOG.e("BaseController", "检查代码，未找到控件 SmartRefreshLayout ");
-            return false;
-        }
-        if (data == null || data.size() == PAGE_SIZE) {
-            return false;
-        }
-        refreshLayout.setEnableLoadMore(true);
-        return true;
     }
 
     /**
@@ -625,13 +598,20 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
         attachChild.add(item);
     }
 
-    public final void onResume() {
-        LOG.i("BaseController", "P onHttpGet ");//自身调用显示
-        onHttpGet();
+    public final void onControllerResume() {
+        onResume();
         if (getAttachChild().size() > 0) {
             for (BaseController item : getAttachChild()) {
-                LOG.i("BaseController", "C onHttpGet ");//弗雷调用显示
-                item.onHttpGet();
+                item.onResume();
+            }
+        }
+    }
+
+    public final void onControllerPause() {
+        onPause();
+        if (getAttachChild().size() > 0) {
+            for (BaseController item : getAttachChild()) {
+                item.onPause();
             }
         }
     }
@@ -645,24 +625,13 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
     public void onActivityDestroy() {
     }
 
-    public final void onPause() {
-        onPause(getActivity());
-        if (getAttachChild().size() > 0) {
-            for (BaseController item : getAttachChild()) {
-                item.onPause(getActivity());
-            }
-        }
+    protected void onPause() {
+        LOG.e("BaseController", "    onPause  ->  " + getClass().getSimpleName());
     }
 
-    protected void onHttpGet() {//onResume
-        LOG.d("BaseController", "    onHttpGet/onResume  :  " + getClass().getSimpleName());
+    protected void onResume() {
+        LOG.e("BaseController", "    onResume  ->  " + getClass().getSimpleName());
     }
-
-    protected void onPause(BaseActivity baseActivity) {
-        if (baseActivity != null)
-            LOG.d("BaseController", baseActivity.mPresenter.getClass().getSimpleName() + " <> onPause:" + this.getClass().getSimpleName());
-    }
-
 
     @LayoutRes
     public abstract int getLayoutId();
@@ -741,6 +710,10 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
             } else if (obj == ViewParam.UNCHECKABLE) {
                 view.setClickable(false);
             }
+            return;
+        }
+        if (obj instanceof View.OnClickListener) {
+            view.setOnClickListener((View.OnClickListener) obj);
             return;
         }
         if (obj instanceof OnRefuseAndLoadListener.Status && view instanceof SmartRefreshLayout) {
@@ -947,10 +920,6 @@ public abstract class BaseController implements NetResponseViewImpl, View.OnClic
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onClick(View v) {
     }
 
     /**

@@ -29,6 +29,6 @@ public class ProxyObject {
     }
 
     public <T> T get(Class<T> c) {
-        return (T) mainObject;
+        return c.cast(mainObject);
     }
 }

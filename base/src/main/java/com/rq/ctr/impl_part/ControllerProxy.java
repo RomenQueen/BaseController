@@ -1,13 +1,17 @@
 package com.rq.ctr.impl_part;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -33,9 +37,13 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import java.io.Serializable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
+import static com.rq.ctr.controller_part.BaseController.TAG_PASS;
 import static com.rq.ctr.impl_part.OnRefuseAndLoadListener.Status.FinishRefuseAndLoad;
 
 public class ControllerProxy {
@@ -374,5 +382,63 @@ public class ControllerProxy {
         if (util.getDecoration() != null) {
             recyclerView.addItemDecoration(util.getDecoration());
         }
+    }
+
+    public void startActivity(Class activity, Serializable... pass) {
+        Intent intent = new Intent(mContext, activity);
+        if (pass != null && pass.length > 0) {
+            for (int i = 0; i < pass.length; i++) {
+                intent.putExtra(TAG_PASS + i, pass[i]);
+            }
+        }
+        mContext.startActivity(intent);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public <T extends Serializable> T getPass(int position, Intent... pass) {
+        LOG.e("ControllerProxy", "getPass:400");
+        T result = null;
+        if (pass != null && pass.length > 0) {
+            result = (T) pass[0].getSerializableExtra(TAG_PASS + position);
+        }
+        if (proxyObject.is(Fragment.class) && proxyObject.get(Fragment.class) != null && proxyObject.get(Fragment.class).getArguments() != null)
+            result = (T) proxyObject.get(Fragment.class).getArguments().getSerializable(TAG_PASS + position);
+        if (proxyObject.is(Activity.class) && proxyObject.get(Activity.class) != null) {
+            result = (T) proxyObject.get(Activity.class).getIntent().getSerializableExtra(TAG_PASS + position);
+        }
+        if (proxyObject.is(Bundle.class) && proxyObject.get(Bundle.class) != null) {
+            result = (T) proxyObject.get(Bundle.class).getSerializable(TAG_PASS + position);
+        }
+        LOG.e("ControllerProxy", "getPass:410");
+        try {
+//          根据方法名和参数获取getPass方法
+            LOG.e("ControllerProxy", "getPass:413");
+            Method method = this.getClass().getMethod("getPass", int.class, Intent[].class);
+            Type type = method.getGenericReturnType();// 获取返回值类型
+            show(type);
+            if (type instanceof ParameterizedType) { // 判断获取的类型是否是参数类型
+                Type[] typesto = ((ParameterizedType) type).getActualTypeArguments();// 强制转型为带参数的泛型类型，
+                // getActualTypeArguments()方法获取类型中的实际类型，如map<String,Integer>中的
+                // String，integer因为可能是多个，所以使用数组
+                for (Type type2 : typesto) {
+                    LOG.e("ControllerProxy", "getPass:423");
+                    Log.e("ControllerProxy", "泛型类型" + type2);
+                }
+            }
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    public static void show(Type t) {
+        Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
+//            Log.e("test", "getClass--:" + t.getClass());
     }
 }

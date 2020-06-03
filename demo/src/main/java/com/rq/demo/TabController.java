@@ -5,13 +5,13 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.rq.ctr.controller_part.BaseController;
-import com.rq.ctr.controller_part.BaseFragment;
 import com.rq.ctr.R;
 import com.rq.ctr.common_util.ToastUtil;
+import com.rq.ctr.controller_part.BaseController;
+import com.rq.ctr.controller_part.BaseFragment;
 import com.rq.ctr.ui.FragmentSaveTabHost;
 
-public abstract class BaseTabController extends BaseController implements TabHost.OnTabChangeListener, View.OnClickListener, FragmentSaveTabHost.OnChangeInterceptor {
+public class TabController extends BaseController implements TabHost.OnTabChangeListener, FragmentSaveTabHost.OnChangeInterceptor, View.OnClickListener {
 
     @Override
     public boolean needOutScroll() {
@@ -38,7 +38,7 @@ public abstract class BaseTabController extends BaseController implements TabHos
     };
     private Class fragmentArray[] = {
             GuideController.class,//首页
-            GuideController.class,//团队
+            GuideController2.class,//团队
             null,//空
             null,//直播
             null//空
@@ -56,7 +56,6 @@ public abstract class BaseTabController extends BaseController implements TabHos
     @Override
     public final void onViewCreated() {
         super.onViewCreated();
-
         FragmentSaveTabHost tabhost = getView(android.R.id.tabhost);
         tabhost.setup(getActivity(), getActivity().getSupportFragmentManager(), R.id.main_content);
         for (int i = 0; i < texts.length; i++) {
@@ -82,6 +81,7 @@ public abstract class BaseTabController extends BaseController implements TabHos
         textView.setText(texts[i]);
         return view;
     }
+
     String fraTag;
 
     @Override
@@ -89,6 +89,7 @@ public abstract class BaseTabController extends BaseController implements TabHos
         this.fraTag = tabId;
 //        setImmersion(!"我的".equals(tabId), R.color.colorPrimary_ff2a3b);
     }
+
     @Override
     public boolean interruptBack() {
         BaseFragment fragment = (BaseFragment) getActivity().getSupportFragmentManager().findFragmentByTag(fraTag);
@@ -96,5 +97,10 @@ public abstract class BaseTabController extends BaseController implements TabHos
             return fragment.onBreakPress();
         }
         return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 }

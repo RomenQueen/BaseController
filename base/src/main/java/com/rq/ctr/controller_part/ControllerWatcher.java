@@ -95,7 +95,7 @@ public class ControllerWatcher {
     public void notifyFragmentOnResume() {
         for (BaseController item : ControllerWatcher.get().getVisibleFragmentController()) {
             LOG.d("ControllerWatcher", "notifyFragmentOnResume item --> " + item.getClass().getSimpleName());
-            item.onHttpGet();
+            item.onResume();
         }
     }
 
