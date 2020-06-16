@@ -190,7 +190,6 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
                 if (mPresenter != null) {
                     if ((Build.VERSION.SDK_INT < Build.VERSION_CODES.M || mPresenter.needPermissions() == null)) {
                         mPresenter.onViewCreated();
-                        mPresenter.findView();
                     }
                     if (mPresenter.underStatusBar()) {
                         ImmersionBar.with(this).fitsSystemWindows(false).fullScreen(false).init();
@@ -212,7 +211,6 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
                 }
                 if (mPresenter != null && (Build.VERSION.SDK_INT < Build.VERSION_CODES.M || mPresenter.needPermissions() == null)) {
                     mPresenter.onViewCreated();
-                    mPresenter.findView();
                 }
             }
             if (mPresenter != null) {
@@ -229,7 +227,6 @@ public class BaseActivity<P extends BaseController> extends RxFragmentActivity i
                         ActivityCompat.requestPermissions(this, this.mPresenter.needPermissions(), TAG_PERMISSION_GTE);
                     } else {
                         mPresenter.onViewCreated();
-                        mPresenter.findView();
                     }
                 }
             }

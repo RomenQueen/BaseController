@@ -377,11 +377,6 @@ public abstract class BaseController implements NetResponseViewImpl {
         }
     }
 
-    protected void setTitleRightClick(String show, View.OnClickListener clickListener) {
-        setData2View(R.id.common_right_btn, show);
-        setOnClickListener(clickListener, R.id.common_right_btn);
-    }
-
     protected void setImmersion(boolean isWhite, int... color) {//是否为白色顶部  沉浸式显示优化
         if (isWhite) {
             ImmersionBar.with(mActivity)
@@ -491,12 +486,16 @@ public abstract class BaseController implements NetResponseViewImpl {
     }
 
     /**
-     * 为了简化逻辑 ，会在设置View的时候加载一次 refuse(1)
-     * RefreshAble 默认 true
+     * 不建议再调用改法 直接继承 OnRefuseAndLoadListener
+     * 将 Override 复写方法改为 OnRefuseAndLoad
      *
      * @param refuseAndLoad boolean + boolean >>LoadAble + RefreshAble
      *                      null 根据 SmartRefreshLayout父布局 外层高度 与 SmartRefreshLayout 高度自行设置 LoadAble
+     * @see OnRefuseAndLoad
+     * 为了简化逻辑 ，会在设置View的时候加载一次 refuse(1)
+     * RefreshAble 默认 true
      */
+    @Deprecated
     public void setOnRefuseAndLoadListener(int viewId, final OnRefuseAndLoadListener listener, Object... refuseAndLoad) {
         this.refuseViewId = viewId;
         final SmartRefreshLayout refreshLayout = getView(viewId);
@@ -538,7 +537,7 @@ public abstract class BaseController implements NetResponseViewImpl {
         }
     }
 
-    public void finshRAL() {
+    public void finishRAL() {
         if (refuseViewId == 0) return;
         final SmartRefreshLayout refreshLayout = getView(refuseViewId);
         if (refreshLayout == null) return;
@@ -556,22 +555,6 @@ public abstract class BaseController implements NetResponseViewImpl {
         }
         if (mActivity == null) return null;
         return mActivity.findViewById(id);
-    }
-
-    protected String getSaveString(String key) {
-        return SPUtil.getString(mActivity, key);
-    }
-
-    protected int getSaveInt(String key) {
-        return SPUtil.getInt(mActivity, key);
-    }
-
-    protected boolean getSaveBoolean(String key) {
-        return SPUtil.getBoolean(mActivity, key);
-    }
-
-    protected Long getSaveLong(String key) {
-        return SPUtil.getLong(mActivity, key);
     }
 
     protected void setSave(String key, Object value) {
@@ -636,38 +619,6 @@ public abstract class BaseController implements NetResponseViewImpl {
     @LayoutRes
     public abstract int getLayoutId();
 
-    protected void findView() {//填充页面固定数据
-        final Object object[] = fillData();
-        if (object == null) return;
-        final int size = object.length;
-
-        if (size % 2 == 0 && size > 0) {
-            for (int i = 0; i < size / 2; i++) {
-                int id = (Integer) object[i * 2];
-                viewSparseArray.append(id, getView((Integer) object[i * 2]));
-                dataSparseArray.append(id, object[i * 2 + 1]);
-            }
-        }
-        if (viewSparseArray.size() > 0) {
-            setFinalData2View();
-        }
-    }
-
-    //填充固定数据 用键值对的形式填充
-    protected Object[] fillData() {
-//        edg:
-//        new Object[]{R.id.img, QCode.setCode(this, url, 400, 400)
-//                , R.id.img2, R.mipmap.happy
-//         };
-        return null;
-    }
-
-    private void setFinalData2View() {//设置固定数据，一般直接来自于 fillData
-        for (int i = 0; i < viewSparseArray.size(); i++) {
-            setDataToView(viewSparseArray.keyAt(i), dataSparseArray.get(viewSparseArray.keyAt(i)));
-        }
-    }
-
     private void setDataToView(int viewId, Object object) {
         if (viewSparseArray.get(viewId) != null) {
             setDataToView(viewSparseArray.get(viewId), object);
@@ -689,7 +640,7 @@ public abstract class BaseController implements NetResponseViewImpl {
             LOG.utilLog("ViewEmpty");
             return;
         }
-        if (fillCustomViewData(view, obj)) {
+        if (fillViewData(view, obj)) {
             return;
         }
         if (obj == null) {
@@ -752,7 +703,7 @@ public abstract class BaseController implements NetResponseViewImpl {
         }
     }
 
-    protected boolean fillCustomViewData(@NonNull View view, @Nullable Object obj) {
+    protected boolean fillViewData(@NonNull View view, @Nullable Object obj) {
         return false;
     }
 
@@ -829,7 +780,7 @@ public abstract class BaseController implements NetResponseViewImpl {
 
     @Override
     public void dismissLoading() {
-        finshRAL();
+        finishRAL();
         if (mFragment != null) {
             mFragment.dismissLoading();
         } else {
@@ -853,7 +804,7 @@ public abstract class BaseController implements NetResponseViewImpl {
 
     @Override
     public <T extends Serializable> void onResponseSucceed(@NonNull RequestType type, T data) {
-        LOG.e("BaseController", "onResponseSucceed.657:");
+        finishRAL();
         if (mFragment != null) {
             mFragment.onResponseSucceed(type, data);
         } else {
@@ -864,6 +815,7 @@ public abstract class BaseController implements NetResponseViewImpl {
 
     @Override
     public void onResponseError(@NonNull RequestType type) {
+        finishRAL();
         HttpParamUtil.commonError(this, type);
         if (mFragment != null) {
             mFragment.onResponseError(type);

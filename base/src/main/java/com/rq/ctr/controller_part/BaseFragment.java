@@ -138,7 +138,6 @@ public class BaseFragment<P extends BaseController> extends RxFragment implement
         }
         LOG.e("BaseFragment", "onViewCreated.128:" + mPresenter);
         mPresenter.setFragmentRootView(view);
-        mPresenter.findView();
         onShowToUser();
         LOG.e("BaseFragment", "onViewCreated.132:" + mPresenter);
         mPresenter.onViewCreated();

@@ -323,7 +323,7 @@ public class ControllerProxy {
                 fillRecyclerViewData((RecyclerView) view, obj);
             }
         } else {
-            LOG.e(proxyObject.get(Object.class).getClass().getSimpleName(), "ControllerProxy can't find finalSetDataToView(" + view.getClass().getSimpleName() + ",Object),please Override Method fillCustomViewData and return true");
+            LOG.e(proxyObject.get(Object.class).getClass().getSimpleName(), "ControllerProxy can't find finalSetDataToView(" + view.getClass().getSimpleName() + ",Object),please Override Method fillViewData and return true");
         }
     }
 
